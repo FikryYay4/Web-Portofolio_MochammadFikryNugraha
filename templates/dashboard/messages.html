@@ -1,0 +1,52 @@
+{% extends 'base.html' %}{% block title %}Messages{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+    <div class="dashboard__header">
+        <h1 class="dashboard__title">Messages</h1>
+    </div>
+
+    {% if messages %}
+    <div class="messages__list">
+        {% for msg in messages %}
+        <div class="message-card glass-card">
+            <div class="message-card__header">
+                <div>
+                    <strong class="message-card__name">{{ msg.name }}</strong>
+                    <span class="message-card__email">{{ msg.email }}</span>
+                </div>
+                <span class="message-card__date">{{ msg.created_at | default('Recently') }}</span>
+            </div>
+            {% if msg.subject %}
+                <h4 class="message-card__subject">{{ msg.subject }}</h4>
+            {% endif %}
+            <p class="message-card__body">{{ msg.message }}</p>
+            <div class="message-card__actions">
+                <button type="button" class="btn btn--ghost btn--sm" onclick="replyMessage('{{ msg.email }}','{{ msg.subject | default('Your Message') }}')">Reply</button>
+                <form action="{{ url_for('admin.message_delete', message_id=msg.id) }}" method="POST" class="inline-form" onsubmit="return confirm('Delete this message?')">
+                    <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+                    <button type="submit" class="btn btn--ghost btn--sm btn--danger">Delete</button>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="dashboard__empty glass-card">
+        <p>No messages yet.</p>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+// Show "Message deleted!" popup when flash message indicates deletion
+document.addEventListener('DOMContentLoaded', function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('deleted') === '1') {
+        alert('Message deleted!');
+        // Clean up URL
+        window.history.replaceState({}, document.title, window.location.pathname);
+    }
+});
+</script>
+{% endblock %}

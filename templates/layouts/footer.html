@@ -1,0 +1,27 @@
+<footer class="footer">
+    <div class="container">
+        <div class="footer__content">
+            <div class="footer__social">
+                <a href="https://www.linkedin.com/in/mochammad-fikry-nugraha-75636338a" target="_blank" rel="noopener noreferrer" class="footer__social-link" aria-label="LinkedIn">
+                    <img src="{{ url_for('static', filename='assets/svg/social/DeviconLinkedin.svg') }}" alt="LinkedIn" width="24" height="24">
+                </a>
+                <a href="https://github.com/FikryYay4" target="_blank" rel="noopener noreferrer" class="footer__social-link" aria-label="GitHub">
+                    <img src="{{ url_for('static', filename='assets/svg/social/github-142-svgrepo-com.svg') }}" alt="GitHub" width="24" height="24">
+                </a>
+                <a href="https://www.instagram.com/mochammadfikryn12?igsh=N3dmOWl6bTZ0MDlq" target="_blank" rel="noopener noreferrer" class="footer__social-link" aria-label="Instagram">
+                    <img src="{{ url_for('static', filename='assets/svg/social/SkillIconsInstagram.svg') }}" alt="Instagram" width="24" height="24">
+                </a>
+                <a href="mailto:nugrahafikry2@gmail.com" class="footer__social-link" aria-label="Email">
+                    <img src="{{ url_for('static', filename='assets/svg/social/LogosGoogleGmail.svg') }}" alt="Email" width="24" height="24">
+                </a>
+            </div>
+            <p class="footer__copy">&copy; {{ now.year if now else 2026 }} {{ profile.name if profile else 'Portfolio' }}. All rights reserved.</p>
+        </div>
+    </div>
+
+    <button class="back-to-top" id="backToTop" aria-label="Back to top">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="18 15 12 9 6 15"></polyline>
+        </svg>
+    </button>
+</footer>

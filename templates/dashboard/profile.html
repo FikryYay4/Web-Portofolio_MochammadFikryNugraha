@@ -1,0 +1,64 @@
+{% extends 'base.html' %}{% block title %}Edit Profile{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+    <div class="dashboard__header">
+    <h1 class="dashboard__title">Edit Profile</h1>
+</div>
+
+
+    <form class="dashboard__form glass-card" action="{{ url_for('admin.profile') }}" method="POST" enctype="multipart/form-data">
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+        <div class="form-row">
+            <div class="form-group">
+                <label for="name" class="form-label">Full Name *</label>
+                <input type="text" id="name" name="name" class="form-input" value="{{ profile.name if profile else '' }}" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="headline" class="form-label">Headline</label>
+            <input type="text" id="headline" name="headline" class="form-input" value="{{ profile.headline if profile else '' }}" placeholder="Full Stack Developer & Designer">
+        </div>
+        <div class="form-group">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" id="email" name="email" class="form-input" value="{{ profile.email if profile else '' }}">
+        </div>
+        <div class="form-group">
+            <label for="location" class="form-label">Location</label>
+            <input type="text" id="location" name="location" class="form-input" value="{{ profile.location if profile else '' }}">
+        </div>
+        <div class="form-group">
+            <label for="about" class="form-label">About</label>
+            <textarea id="about" name="about" class="form-input form-textarea" rows="5">{{ profile.about if profile else '' }}</textarea>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label for="linkedin" class="form-label">LinkedIn URL</label>
+                <input type="url" id="linkedin" name="linkedin_url" class="form-input" value="{{ profile.linkedin_url if profile else '' }}">
+            </div>
+            <div class="form-group">
+                <label for="github" class="form-label">GitHub URL</label>
+                <input type="url" id="github" name="github_url" class="form-input" value="{{ profile.github_url if profile else '' }}">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label for="instagram" class="form-label">Instagram URL</label>
+                <input type="url" id="instagram" name="instagram_url" class="form-input" value="{{ profile.instagram_url if profile else '' }}">
+            </div>
+            <div class="form-group">
+                <label for="phone" class="form-label">Phone</label>
+                <input type="text" id="phone" name="phone" class="form-input" value="{{ profile.phone if profile else '' }}">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="image" class="form-label">Profile Image</label>
+            {% if profile and profile.photo %}
+                <p class="form-hint">Current: {{ profile.photo }}</p>
+            {% endif %}
+            <input type="file" id="image" name="photo" class="form-input form-file" accept="image/*">
+        </div>
+        <button type="submit" class="btn btn--primary">Save Profile</button>
+    </form>
+</div>
+{% endblock %}

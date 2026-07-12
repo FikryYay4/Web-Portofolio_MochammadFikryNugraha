@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+    <div class="dashboard__header mb-6">
+        <h1 class="dashboard__title text-3xl font-bold mb-4">Dashboard</h1>
+        <div class="admin-nav" style="margin-top:12px;">
+            <a href="{{ url_for('admin.dashboard') }}" class="btn btn--ghost" style="margin-right:8px;">Dashboard</a>
+            <a href="{{ url_for('admin.projects_list') }}" class="btn btn--ghost" style="margin-right:8px;">Projects</a>
+            <a href="{{ url_for('admin.skills_list') }}" class="btn btn--ghost" style="margin-right:8px;">Skills</a>
+            <a href="{{ url_for('admin.messages_list') }}" class="btn btn--ghost" style="margin-right:8px;">Messages</a>
+            <a href="{{ url_for('admin.profile') }}" class="btn btn--ghost">Profile</a>
+        </div>
+        <p class="dashboard__subtitle">Welcome back, Admin</p>
+    </div>
+    <div class="dashboard__stats">
+        <div class="stat-card glass-card">
+            <div class="stat-card__icon stat-card__icon--primary">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+            </div>
+            <div class="stat-card__info">
+                <span class="stat-card__num">{{ projects|length if projects else 0 }}</span>
+                <span class="stat-card__label">Projects</span>
+            </div>
+            <a href="{{ url_for('admin.projects_list') }}" class="stat-card__link">View All</a>
+        </div>
+
+        <div class="stat-card glass-card">
+            <div class="stat-card__icon stat-card__icon--accent">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            </div>
+            <div class="stat-card__info">
+                <span class="stat-card__num">{{ messages_count if messages_count else 0 }}</span>
+                <span class="stat-card__label">Messages</span>
+            </div>
+            <a href="{{ url_for('admin.messages_list') }}" class="stat-card__link">View All</a>
+        </div>
+
+        <div class="stat-card glass-card">
+            <div class="stat-card__icon stat-card__icon--secondary">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+            </div>
+            <div class="stat-card__info">
+                <span class="stat-card__num">{{ skills|length if skills else 0 }}</span>
+                <span class="stat-card__label">Skills</span>
+            </div>
+            <a href="{{ url_for('admin.skills_list') }}" class="stat-card__link">View All</a>
+        </div>
+        <div class="stat-card glass-card">
+            <div class="stat-card__icon stat-card__icon--info">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm0 2c-5.33 0-8 2.67-8 4v2h16v-2c0-1.33-2.67-4-8-4z"/></svg>
+            </div>
+            <div class="stat-card__info">
+                <span class="stat-card__num">{{ certificates_count if certificates_count else 0 }}</span>
+                <span class="stat-card__label">Certificates</span>
+            </div>
+            <a href="{{ url_for('admin.dashboard') }}#certificates" class="stat-card__link">View All</a>
+        </div>
+
+        <div class="stat-card glass-card">
+            <div class="stat-card__icon stat-card__icon--success">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </div>
+            <div class="stat-card__info">
+                <span class="stat-card__num">1</span>
+                <span class="stat-card__label">Profile</span>
+            </div>
+            <a href="{{ url_for('admin.profile') }}" class="stat-card__link">Edit</a>
+        </div>
+    </div>
+
+    <div class="dashboard__quick-actions">
+        <h2 class="dashboard__section-title">Quick Actions</h2>
+        <div class="dashboard__actions">
+            <a href="{{ url_for('admin.project_create') }}" class="btn btn--primary">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Add Project
+            </a>
+            <a href="{{ url_for('admin.profile') }}" class="btn btn--secondary">Edit Profile</a>
+            <a href="{{ url_for('admin.skills_list') }}" class="btn btn--secondary">Manage Skills</a>
+            <a href="{{ url_for('public.home') }}" class="btn btn--ghost" target="_blank" rel="noopener noreferrer">View Site</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

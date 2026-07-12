@@ -1,0 +1,32 @@
+{# Skill card component
+   Usage: {% include 'components/skill_card.html' with context %}
+   Expects: skill (object with name, icon, description, software, certificates, year_started)
+#}
+{% set cert_list = skill.certificates.split(',') | map('trim') | list if skill.certificates else [] %}
+{% set soft_list = skill.software.split(',') | map('trim') | list if skill.software else [] %}
+<div class="skill-card glass-card" data-skill="{{ skill.name | lower | replace(' ', '-') }}" data-modal='{{ {
+    "name": skill.name,
+    "description": skill.description,
+    "software": soft_list,
+    "certificates": cert_list,
+    "icon": skill.icon
+} | tojson }}'>
+    <div class="skill-card__icon">
+        {% if skill.icon %}
+            <img src="{{ url_for('static', filename='assets/svg/' + skill.icon) }}" alt="{{ skill.name }}">
+        {% else %}
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/>
+            </svg>
+        {% endif %}
+    </div>
+    <h3 class="skill-card__title">{{ skill.name }}</h3>
+    <p class="skill-card__desc">{{ skill.description }}</p>
+    {% if skill.software %}
+    <ul class="skill-card__software">
+        {% for sw in skill.software.split(',') %}
+            <li>{{ sw.strip() }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+</div>

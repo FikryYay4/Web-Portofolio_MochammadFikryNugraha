@@ -1,0 +1,26 @@
+<section class="section projects" id="projects">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-header__badge">Projects</span>
+            <h2 class="section-header__title">My Work</h2>
+            <p class="section-header__subtitle">A showcase of projects I've built</p>
+        </div>
+
+        <div class="projects__layer-stack">
+            {% if projects %}
+                {% for project in projects %}
+                    <div class="layer-card">
+                        {% include 'components/project_card.html' %}
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="projects__empty">
+                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+                    </svg>
+                    <p>Projects coming soon. Check back later!</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</section>

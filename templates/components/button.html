@@ -1,0 +1,9 @@
+{# Reusable button component
+   Usage: {% include 'components/button.html' with context %}
+   Or: {% include 'components/button.html' with {'variant': 'secondary', 'url': '#about', 'text': 'Learn More'} %}
+#}
+{% set btn_variant = variant | default('primary') %}
+{% set btn_url = url | default('#') %}
+{% set btn_text = text | default('Button') %}
+{% set btn_class = btn_class | default('') %}
+<a href="{{ btn_url }}" class="btn btn--{{ btn_variant }} {{ btn_class }}">{{ btn_text }}</a>

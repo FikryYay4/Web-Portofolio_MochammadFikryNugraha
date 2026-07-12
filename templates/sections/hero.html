@@ -1,0 +1,39 @@
+<section class="hero section-3d" id="hero">
+    <div class="hero__bg">
+        <div class="hero__orb hero__orb--1"></div>
+        <div class="hero__orb hero__orb--2"></div>
+        <div class="hero__orb hero__orb--3"></div>
+    </div>
+    <div class="container hero__container">
+        <div class="hero__content">
+            <p class="hero__greeting">Hello,</p>
+            <h1 class="hero__name">I'm {{ profile.name if profile else 'Your Name' }}</h1>
+            <p class="hero__headline">{{ profile.headline if profile else 'Full Stack Developer & Designer' }}</p>
+            <p class="hero__description">{{ profile.about | truncate(200) if profile else 'A passionate developer crafting modern digital experiences with clean code and creative design.' }}</p>
+            <div class="hero__cta">
+                <a href="#projects" class="btn btn--primary">View Projects</a>
+                <a href="#contact" class="btn btn--secondary">Contact Me</a>
+            </div>
+        </div>
+        <div class="hero__visual">
+            <div class="hero__avatar-wrapper">
+                <canvas id="heroCanvasBack" class="hero__canvas hero__canvas--back"></canvas>
+                <div class="hero__avatar-glow"></div>
+                <canvas id="heroCanvas" class="hero__canvas hero__canvas--front"></canvas>
+                {% if profile and profile.photo %}
+                    <img src="{{ url_for('static', filename='uploads/' + profile.photo) }}" alt="{{ profile.name }}" class="hero__avatar" onerror="this.onerror=null;this.src='{{ url_for('static', filename='uploads/profile.png') }}'">
+                {% else %}
+                    <div class="hero__avatar-placeholder">
+                        <span>{{ (profile.name if profile else 'YN') | truncate(2, True, '') }}</span>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="hero__scroll">
+        <div class="hero__scroll-mouse">
+            <div class="hero__scroll-wheel"></div>
+        </div>
+        <span>Scroll Down</span>
+    </div>
+</section>

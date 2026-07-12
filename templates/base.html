@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>{% block title %}{{ profile.name if profile else 'Portfolio' }}{% endblock %}</title>
+    {% include 'layouts/head.html' %}
+    {% block head %}{% endblock %}
+</head>
+<body>
+    <div id="loader">{% include 'components/loader.html' %}</div>
+    <script>(function(){var l=document.getElementById('loader');function h(){if(l){l.style.opacity='0';l.style.visibility='hidden'}}if(document.readyState==='complete'){setTimeout(h,50)}window.addEventListener('load',function(){setTimeout(h,100)});setTimeout(h,3000)})();</script>
+
+    {% include 'layouts/navbar.html' %}
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    {% include 'layouts/footer.html' %}
+
+    {% include 'components/modal.html' %}
+    {% include 'components/cert_modal.html' %}
+    {% include 'components/project_modal.html' %}
+
+    {% include 'layouts/scripts.html' %}
+    {% block scripts %}
+<script src="{{ url_for('static', filename='js/section-3d.js') }}"></script>
+{% endblock %}
+</body>
+</html>

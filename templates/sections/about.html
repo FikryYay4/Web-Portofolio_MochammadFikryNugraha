@@ -1,0 +1,71 @@
+<section class="section about section-3d" id="about">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-header__badge">About Me</span>
+            <h2 class="section-header__title">Who I Am</h2>
+            <p class="section-header__subtitle">A glimpse into my journey and what drives me</p>
+        </div>
+
+        <div class="about__grid">
+            <div class="about__image-col reveal">
+                <div class="about__image-wrapper">
+                    <div class="about__image-glow"></div>
+                    {% if profile and profile.photo %}
+                        <img src="{{ url_for('static', filename='uploads/' + profile.photo) }}" alt="{{ profile.name }}" class="about__image" onerror="this.onerror=null;this.src='{{ url_for('static', filename='uploads/profile.png') }}'">
+                    {% else %}
+                        <img src="{{ url_for('static', filename='uploads/profile.png') }}" alt="Mochammad Fikry Nugraha" class="about__image">
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="about__content-col">
+                <h3 class="about__title">{{ profile.name if profile else 'Your Name' }}</h3>
+                <p class="about__text">{{ profile.about if profile else 'I am a passionate developer and designer who loves creating innovative digital solutions. With expertise spanning web development, data analysis, graphic design, and video editing, I bring a unique blend of technical and creative skills to every project.' }}</p>
+
+                <div class="about__highlights">
+                    <div class="about__highlight">
+                        <div class="about__highlight-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                        </div>
+                        <span>Programming</span>
+                    </div>
+                    <div class="about__highlight">
+                        <div class="about__highlight-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+                        </div>
+                        <span>Data Analyst</span>
+                    </div>
+                    <div class="about__highlight">
+                        <div class="about__highlight-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+                        </div>
+                        <span>Graphic Design</span>
+                    </div>
+                    <div class="about__highlight">
+                        <div class="about__highlight-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+                        </div>
+                        <span>Video Editor</span>
+                    </div>
+                </div>
+
+                <div class="about__counters">
+                    <div class="about__counter">
+                        <span class="about__counter-num" data-count="{{ project_count or 0 }}">0</span>
+                        <span class="about__counter-label">Projects</span>
+                    </div>
+                    <div class="about__counter">
+                        <span class="about__counter-num" data-count="3">0</span>
+                        <span class="about__counter-label">Years Exp</span>
+                    </div>
+                    <div class="about__counter">
+                        <span class="about__counter-num" data-count="{{ skill_count or 0 }}">0</span>
+                        <span class="about__counter-label">Skills</span>
+                    </div>
+                </div>
+
+                <a href="#contact" class="btn btn--primary">Get In Touch</a>
+            </div>
+        </div>
+    </div>
+</section>

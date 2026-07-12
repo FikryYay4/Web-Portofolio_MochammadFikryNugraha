@@ -1,0 +1,157 @@
+{% extends 'base.html' %}
+{% block title %}Edit Project{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+    <div class="dashboard__header">
+        <h1 class="dashboard__title">Edit Project</h1>
+        <a href="{{ url_for('admin.projects_list') }}" class="btn btn--ghost">Back</a>
+    </div>
+
+    <form class="dashboard__form glass-card" action="{{ url_for('admin.project_edit', project_id=project.id) }}" method="POST" enctype="multipart/form-data">
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+        <div class="form-group">
+            <label for="title" class="form-label">Title *</label>
+            <input type="text" id="title" name="title" class="form-input" value="{{ project.title }}" required>
+        </div>
+        <div class="form-group">
+            <label for="description" class="form-label">Description</label>
+            <textarea id="description" name="description" class="form-input form-textarea" rows="4">{{ project.description or '' }}</textarea>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label for="year" class="form-label">Year</label>
+                <input type="text" id="year" name="year" class="form-input" value="{{ project.year or '' }}">
+            </div>
+            <div class="form-group">
+                <label for="technology" class="form-label">Technologies (comma separated)</label>
+                <input type="text" id="technology" name="technology" class="form-input" value="{{ project.technology or '' }}">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label for="category" class="form-label">Category</label>
+                <input type="text" id="category" name="category" class="form-input" value="{{ project.category or '' }}">
+            </div>
+            <div class="form-group">
+                <label for="order" class="form-label">Order</label>
+                <input type="number" id="order" name="order" class="form-input" value="{{ project.order or 0 }}">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label for="link_demo" class="form-label">Demo URL</label>
+                <input type="url" id="link_demo" name="link_demo" class="form-input" value="{{ project.link_demo or '' }}">
+            </div>
+            <div class="form-group">
+                <label for="link_github" class="form-label">GitHub URL</label>
+                <input type="url" id="link_github" name="link_github" class="form-input" value="{{ project.link_github or '' }}">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="featured" class="form-label">
+                <input type="checkbox" id="featured" name="featured" {% if project.featured %}checked{% endif %} style="margin-right: 0.5rem;"> Featured Project
+            </label>
+        </div>
+        <div class="form-group">
+            <label for="thumbnail" class="form-label">Thumbnail (cover image)</label>
+            {% if project.thumbnail %}
+                <p class="form-hint">Current: {{ project.thumbnail }}</p>
+            {% endif %}
+            <input type="file" id="thumbnail" name="thumbnail" class="form-input form-file" accept="image/*,video/mp4">
+        </div>
+
+        {# Image Gallery Management #}
+        <div class="form-group" style="margin-top:24px;padding-top:24px;border-top:1px solid rgba(255,255,255,0.08);">
+            <label class="form-label">Image Gallery (Layer Stack)</label>
+            {% set pimages = project.images.order_by('order').all() %}
+            {% if pimages or project.thumbnail %}
+            <div id="imageGallery" class="image-gallery" style="display:flex;flex-wrap:wrap;gap:12px;margin-top:12px;">
+                {% for img in pimages %}
+                <div class="image-gallery__item" data-id="{{ img.id }}" draggable="true" style="position:relative;width:120px;height:80px;border-radius:8px;overflow:hidden;border:1px solid rgba(255,255,255,0.1);cursor:grab;">
+                    <img src="{{ url_for('static', filename='uploads/project_images/' + img.filename) }}" alt="" style="width:100%;height:100%;object-fit:cover;">
+                    <button type="button" data-img-id="{{ img.id }}" class="img-delete-btn" style="position:absolute;top:2px;right:2px;width:22px;height:22px;border-radius:50%;border:none;background:rgba(239,68,68,0.9);color:#fff;font-size:14px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;">&times;</button>
+                    <div class="image-gallery__order" style="position:absolute;bottom:2px;left:2px;background:rgba(0,0,0,0.7);color:#fff;font-size:11px;padding:1px 6px;border-radius:4px;">{{ img.order }}</div>
+                </div>
+                {% endfor %}
+            </div>
+            <input type="hidden" name="image_order" id="imageOrder" value="">
+            <p class="form-hint" style="color:var(--text-secondary);font-size:0.85rem;margin-top:6px;">Drag images to reorder. This determines the layer stack order (top image = first).</p>
+            {% else %}
+            <p class="form-hint" style="color:var(--text-secondary);margin-top:8px;">No additional images yet.</p>
+            {% endif %}
+        </div>
+        <div class="form-group">
+            <label for="images" class="form-label">Add More Images</label>
+            <input type="file" id="images" name="images" class="form-input form-file" accept="image/*" multiple>
+        </div>
+
+        <button type="submit" class="btn btn--primary">Update Project</button>
+    </form>
+</div>
+
+<script>
+document.addEventListener('click', function(e) {
+    var btn = e.target.closest('.img-delete-btn');
+    if (!btn) return;
+    var id = btn.getAttribute('data-img-id');
+    if (!id || !confirm('Delete this image?')) return;
+    var form = document.createElement('form');
+    form.method = 'POST';
+    form.action = '{{ url_for("admin.project_image_delete", project_id=project.id, image_id=0) }}'.replace('/0', '/' + id);
+    var csrfInput = document.createElement('input');
+    csrfInput.type = 'hidden';
+    csrfInput.name = '_csrf_token';
+    csrfInput.value = '{{ csrf_token() }}';
+    form.appendChild(csrfInput);
+    document.body.appendChild(form);
+    form.submit();
+});
+
+function updateImageOrder() {
+    var items = document.querySelectorAll('#imageGallery .image-gallery__item');
+    var ids = [];
+    items.forEach(function(item) { ids.push(item.getAttribute('data-id')); });
+    document.getElementById('imageOrder').value = ids.join(',');
+}
+
+var gallery = document.getElementById('imageGallery');
+if (gallery) {
+    var dragSrc = null;
+    gallery.querySelectorAll('.image-gallery__item').forEach(function(item) {
+        item.addEventListener('dragstart', function(e) {
+            dragSrc = this;
+            this.style.opacity = '0.5';
+            e.dataTransfer.effectAllowed = 'move';
+        });
+        item.addEventListener('dragend', function(e) {
+            this.style.opacity = '1';
+        });
+        item.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            this.style.borderColor = 'var(--primary)';
+        });
+        item.addEventListener('dragleave', function(e) {
+            this.style.borderColor = 'rgba(255,255,255,0.1)';
+        });
+        item.addEventListener('drop', function(e) {
+            e.preventDefault();
+            this.style.borderColor = 'rgba(255,255,255,0.1)';
+            if (dragSrc !== this) {
+                var parent = this.parentNode;
+                var siblings = Array.from(parent.children);
+                var fromIdx = siblings.indexOf(dragSrc);
+                var toIdx = siblings.indexOf(this);
+                if (fromIdx < toIdx) {
+                    parent.insertBefore(dragSrc, this.nextSibling);
+                } else {
+                    parent.insertBefore(dragSrc, this);
+                }
+                updateImageOrder();
+            }
+        });
+    });
+    updateImageOrder();
+}
+</script>
+{% endblock %}

@@ -1,0 +1,72 @@
+<section class="section skills" id="skills">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-header__badge">My Skills</span>
+            <h2 class="section-header__title">What I Do Best</h2>
+            <p class="section-header__subtitle">Technologies and tools I work with</p>
+        </div>
+
+        <div class="skills__grid">
+            {% if skills %}
+                {% for skill in skills %}
+                    {% include 'components/skill_card.html' %}
+                {% endfor %}
+            {% else %}
+                <div class="skill-card glass-card" data-skill="programming" data-modal='{"name":"Programming","icon":"programming/python-svgrepo-com.svg","description":"Full-stack web development.","software":["Python","JavaScript","HTML/CSS","SQL"],"certificates":["Sertifikat Kompetensi Pemrograman (In Study)"],"projects":["Enterprise Web Application (In Study)"]}'>
+                    <div class="skill-card__icon">
+                        <img src="{{ url_for('static', filename='assets/svg/programming/python-svgrepo-com.svg') }}" alt="Programming">
+                    </div>
+                    <h3 class="skill-card__title">Programming</h3>
+                    <p class="skill-card__desc">Full-stack web development. Status: In study / Coming soon.</p>
+                    <ul class="skill-card__software">
+                        <li>Python</li><li>JavaScript</li><li>HTML/CSS</li><li>SQL</li>
+                    </ul>
+                </div>
+
+                <div class="skill-card glass-card" data-skill="data-analyst" data-modal='{"name":"Data Analyst","icon":"data-analyst/google-bigquery.svg","description":"Transform raw data into actionable insights using analytics tools.","software":["Google BigQuery","Excel","Looker","Python"],"certificates":["Sertifikat TOEIC (IMG_20250604_0001_page-0001.jpg)","Sertifikat TOEFL (IMG_20250604_0001_page-0002.jpg)"],"projects":[]}'>
+                    <div class="skill-card__icon">
+                        <img src="{{ url_for('static', filename='assets/svg/data-analyst/google-bigquery.svg') }}" alt="Data Analyst">
+                    </div>
+                    <h3 class="skill-card__title">Data Analyst</h3>
+                    <p class="skill-card__desc">Transform raw data into insights. Sertifikasi TOEFL & TOEIC.</p>
+                    <ul class="skill-card__software">
+                        <li>Google BigQuery</li><li>Excel</li><li>Looker</li><li>Python</li>
+                    </ul>
+                </div>
+
+                <div class="skill-card glass-card" data-skill="graphic-design" data-modal='{"name":"Graphic Design","icon":"graphic-design/adobe-photoshop-svgrepo-com.svg","description":"Create stunning visuals, branding, and UI/UX designs.","software":["Adobe Photoshop","Adobe Illustrator"],"projects":[]}'>
+                    <div class="skill-card__icon">
+                        <img src="{{ url_for('static', filename='assets/svg/graphic-design/adobe-photoshop-svgrepo-com.svg') }}" alt="Graphic Design">
+                    </div>
+                    <h3 class="skill-card__title">Graphic Design</h3>
+                    <p class="skill-card__desc">Create stunning visuals, branding, and UI/UX designs.</p>
+                    <ul class="skill-card__software">
+                        <li>Adobe Photoshop</li><li>Adobe Illustrator</li>
+                    </ul>
+                </div>
+
+                <div class="skill-card glass-card" data-skill="video-editor" data-modal='{"name":"Video Editor","icon":"video-editor/adobe-premiere-svgrepo-com.svg","description":"Professional video editing and motion graphics creation. Note: Bahan pembuatan video dibuat dengan AI, Design_Graphic.","software":["Adobe Premiere Pro","Adobe After Effects"],"certificates":["Sertifikat Video Editing"],"projects":["Creative AI Video Editing"]}'>
+                    <div class="skill-card__icon">
+                        <img src="{{ url_for('static', filename='assets/svg/video-editor/adobe-premiere-svgrepo-com.svg') }}" alt="Video Editor">
+                    </div>
+                    <h3 class="skill-card__title">Video Editor</h3>
+                    <p class="skill-card__desc">Video editing. Note: Bahan video dibuat dengan AI, Design_Graphic.</p>
+                    <ul class="skill-card__software">
+                        <li>Adobe Premiere</li><li>After Effects</li>
+                    </ul>
+                </div>
+
+                <div class="skill-card glass-card" data-skill="network-engineering" data-modal='{"name":"Network Engineering","icon":"programming/DeviconAndroidstudio.svg","description":"Desain, konfigurasi, dan administrasi infrastruktur jaringan komputer.","software":["Cisco Packet Tracer","Mikrotik RouterOS"],"certificates":["BNSP Network Engineering (Expired Maret 2028)"],"projects":["Network Architecture Blueprint (In Study)"]}'>
+                    <div class="skill-card__icon">
+                        <img src="{{ url_for('static', filename='assets/svg/programming/DeviconAndroidstudio.svg') }}" alt="Network Engineering">
+                    </div>
+                    <h3 class="skill-card__title">Network Engineering</h3>
+                    <p class="skill-card__desc">Network infrastructure. BNSP Network Engineering s/d Maret 2028.</p>
+                    <ul class="skill-card__software">
+                        <li>Cisco</li><li>Mikrotik</li>
+                    </ul>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</section>

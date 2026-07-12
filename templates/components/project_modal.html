@@ -1,0 +1,19 @@
+<div id="projectModal" class="modal-overlay" aria-hidden="true" onclick="closeProjectModal(event)">
+    <div class="project-carousel" onclick="event.stopPropagation()">
+        <button class="modal-close" aria-label="Close modal" onclick="closeProjectModal()">&times;</button>
+        <div class="project-carousel__viewport" id="carouselViewport">
+            <div class="project-carousel__track" id="carouselTrack">
+            </div>
+            <button class="project-carousel__arrow project-carousel__arrow--left" aria-label="Previous image" onclick="window.prevSlide()">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+            </button>
+            <button class="project-carousel__arrow project-carousel__arrow--right" aria-label="Next image" onclick="window.nextSlide()">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
+        </div>
+        <div class="project-carousel__footer">
+            <div class="project-carousel__dots" id="carouselDots"></div>
+            <p class="project-carousel__counter" id="carouselCounter"></p>
+        </div>
+    </div>
+</div>

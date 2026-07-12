@@ -1,0 +1,60 @@
+<div class="project-card glass-card">
+    {% set all_imgs = project.all_images %}
+    <div class="project-card__image" data-title="{{ project.title | e }}"
+         data-files='{{ all_imgs | tojson | safe }}'
+         onclick="openProjectModal(this)">
+        {% if all_imgs %}
+            {% for fname in all_imgs %}
+                {% if fname.endswith('.mp4') %}
+                    {% set src = url_for('static', filename='uploads/' + fname) %}
+                    <video src="{{ src }}" autoplay loop muted playsinline
+                           class="project-card__stack-item {% if loop.first %}project-card__stack-item--active{% endif %}"
+</video>
+                {% else %}
+                    {% if loop.first %}
+                        {% set src = url_for('static', filename='uploads/' + fname) %}
+                    {% else %}
+                        {% set src = url_for('static', filename='uploads/project_images/' + fname) %}
+                    {% endif %}
+                    <img src="{{ src }}"
+                         alt="{{ project.title }}"
+                         class="project-card__stack-item {% if loop.first %}project-card__stack-item--active{% endif %}"
+                         onerror="if(this.src.includes('project_images')){this.src='{{ url_for('static', filename='uploads/' + fname) }}'}">
+                {% endif %}
+            {% endfor %}
+            {% if all_imgs|length > 1 %}
+            <div class="project-card__stack-indicator">
+                <span class="project-card__stack-count">{{ all_imgs|length }} photos</span>
+            </div>
+            {% endif %}
+        {% else %}
+            <div class="project-card__placeholder">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>
+                </svg>
+            </div>
+        {% endif %}
+    </div>
+    <div class="project-card__body">
+        <div class="project-card__meta">
+            {% if project.year %}<span class="project-card__year">{{ project.year }}</span>{% endif %}
+        </div>
+        <h3 class="project-card__title">{{ project.title }}</h3>
+        <p class="project-card__desc">{{ project.description }}</p>
+        {% if project.technology %}
+        <div class="project-card__tech">
+            {% for t in project.technology.split(',') %}
+                <span class="tag">{{ t.strip() }}</span>
+            {% endfor %}
+        </div>
+        {% endif %}
+        <div class="project-card__links">
+            {% if project.link_demo %}
+                <a href="{{ project.link_demo }}" target="_blank" rel="noopener noreferrer" class="btn btn--ghost btn--sm">Demo</a>
+            {% endif %}
+            {% if project.link_github %}
+                <a href="{{ project.link_github }}" target="_blank" rel="noopener noreferrer" class="btn btn--ghost btn--sm">Code</a>
+            {% endif %}
+        </div>
+    </div>
+</div>

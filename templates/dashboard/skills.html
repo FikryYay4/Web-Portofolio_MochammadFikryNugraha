@@ -1,0 +1,78 @@
+{% extends 'base.html' %}{% block title %}Manage Skills{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+    <div class="dashboard__header">
+        <h1 class="dashboard__title">Skills</h1>
+        <a href="{{ url_for('admin.skill_create') }}" class="btn btn--primary" style="margin-left:12px;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Add New
+        </a>
+    </div>
+    {% if skill is none %}
+    <form action="{{ url_for('admin.skill_create') }}" method="POST" enctype="multipart/form-data" class="glass-card" style="padding:16px; margin-top:12px;">
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}" />
+        <div><label>Name:</label><input type="text" name="name" required></div>
+        <div><label>Logo (file):</label><input type="file" name="logo"></div>
+        <div><label>Description:</label><textarea name="description"></textarea></div>
+        <div><label>Software (comma separated):</label><input type="text" name="software"></div>
+        <div><label>Certificates:</label><input type="text" name="certificates"></div>
+        <div><label>Year Started:</label><input type="number" name="year_started"></div>
+        <div><label>Order:</label><input type="number" name="order" value="0"></div>
+        <button type="submit" class="btn btn--primary" style="margin-top:8px;">Create Skill</button>
+    </form>
+    {% endif %}
+
+    {% if skills %}
+    <div class="dashboard__table-wrapper">
+        <table class="dashboard__table">
+            <thead>
+                <tr>
+                    <th>Icon</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Software</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for skill in skills %}
+                <tr>
+                    <td>
+                        {% if skill.icon %}
+                            {% if skill.icon.endswith('.svg') %}
+                                <img src="{{ url_for('static', filename='assets/svg/' + skill.icon) }}" alt="{{ skill.name }}" width="32" height="32">
+                            {% else %}
+                                <img src="{{ url_for('static', filename='uploads/skills/' + skill.icon) }}" alt="{{ skill.name }}" width="32" height="32">
+                            {% endif %}
+                        {% endif %}
+                    </td>
+                    <td>{{ skill.name }}</td>
+                    <td>{{ skill.description | truncate(60) if skill.description else '-' }}</td>
+                    <td>
+                        {% if skill.software %}
+                            {% for sw in skill.software %}
+                                <span class="tag tag--sm">{{ sw }}</span>
+                            {% endfor %}
+                        {% endif %}
+                    </td>
+                    <td class="dashboard__actions-cell">
+                        <a href="{{ url_for('admin.skill_edit', skill_id=skill.id) }}" class="btn btn--ghost btn--sm">Edit</a>
+                        <form action="{{ url_for('admin.skill_delete', skill_id=skill.id) }}" method="POST" class="inline-form" onsubmit="return confirm('Delete this skill?')">
+                            <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+                            <button type="submit" class="btn btn--ghost btn--sm btn--danger">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="dashboard__empty glass-card">
+        <p>No skills yet. Add your first skill!</p>
+        <a href="{{ url_for('admin.skill_create') }}" class="btn btn--primary">Add Skill</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
