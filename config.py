@@ -11,7 +11,7 @@ class Config:
     UPLOAD_FOLDER = os.path.join(BASE_DIR, 'static', 'uploads')
     MAX_CONTENT_LENGTH = 5 * 1024 * 1024  # 5MB
     ADMIN_USERNAME = os.environ.get('ADMIN_USERNAME', 'admin')
-    ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD', 'My_portofolio')
+    ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD', 'admin123')
     # Session security hardening
     SESSION_COOKIE_SECURE = os.environ.get('SESSION_SECURE', 'false').lower() == 'true'
     SESSION_COOKIE_HTTPONLY = True
