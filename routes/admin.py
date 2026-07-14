@@ -328,10 +328,13 @@ def certificates_list():
     from flask import current_app
     seen = set()
     certs = []
+    skip = {'.gitkeep', '.gitignore', 'thumbs.db', '.ds_store'}
     for base in [os.path.join(current_app.config['STATIC_DIR'], 'uploads', 'certificates'),
                  os.path.join(current_app.config['UPLOAD_FOLDER'], 'certificates')]:
         if os.path.isdir(base):
             for f in sorted(os.listdir(base)):
+                if f.lower() in skip:
+                    continue
                 fp = os.path.join(base, f)
                 if os.path.isfile(fp) and f not in seen:
                     seen.add(f)
@@ -367,13 +370,18 @@ def certificates_delete():
         return redirect(url_for('admin.certificates_list'))
     import os
     from flask import current_app
-    cert_dir = os.path.join(current_app.config['UPLOAD_FOLDER'], 'certificates')
-    fpath = os.path.normpath(os.path.join(cert_dir, fname))
-    if fpath.startswith(os.path.normpath(cert_dir)) and os.path.exists(fpath):
-        os.remove(fpath)
-        flash('Certificate deleted!', 'success')
-    else:
-        flash('File not found.', 'error')
+    bases = [os.path.join(current_app.config['UPLOAD_FOLDER'], 'certificates'),
+             os.path.join(current_app.config['STATIC_DIR'], 'uploads', 'certificates')]
+    for cert_dir in bases:
+        fpath = os.path.normpath(os.path.join(cert_dir, fname))
+        if fpath.startswith(os.path.normpath(cert_dir)) and os.path.exists(fpath):
+            try:
+                os.remove(fpath)
+                flash('Certificate deleted!', 'success')
+            except OSError:
+                flash('Could not delete file (read-only?).', 'error')
+            return redirect(url_for('admin.certificates_list'))
+    flash('File not found.', 'error')
     return redirect(url_for('admin.certificates_list'))
 
 
