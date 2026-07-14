@@ -28,7 +28,11 @@ class Config:
         'pool_pre_ping': True,
         'pool_recycle': 300,
     }
-    UPLOAD_FOLDER = os.path.join(BASE_DIR, 'static', 'uploads')
+    # On Vercel, filesystem is read-only except /tmp/; store uploads there
+    if os.environ.get('VERCEL') == '1':
+        UPLOAD_FOLDER = '/tmp/uploads'
+    else:
+        UPLOAD_FOLDER = os.path.join(BASE_DIR, 'static', 'uploads')
     MAX_CONTENT_LENGTH = 5 * 1024 * 1024  # 5MB
     ADMIN_USERNAME = os.environ.get('ADMIN_USERNAME', 'admin')
     ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD', 'admin123')

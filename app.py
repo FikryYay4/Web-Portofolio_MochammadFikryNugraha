@@ -1,4 +1,5 @@
-from flask import Flask
+import os
+from flask import Flask, send_from_directory
 from flask_migrate import Migrate
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
@@ -8,9 +9,24 @@ from config import Config
 from models import db
 
 
+class PortfolioFlask(Flask):
+    """Custom Flask subclass that serves upload files from UPLOAD_FOLDER (e.g. /tmp/uploads on Vercel).
+    All template references use url_for('static', filename='uploads/...') which calls
+    send_static_file; this override checks the writable upload path first.
+    """
+
+    def send_static_file(self, filename):
+        if filename.startswith('uploads/'):
+            upload_dir = self.config.get('UPLOAD_FOLDER')
+            rel_path = filename[8:]  # strip 'uploads/' prefix
+            full_path = os.path.join(upload_dir, rel_path)
+            if os.path.exists(full_path):
+                cache_timeout = self.get_send_file_max_age(filename)
+                return send_from_directory(upload_dir, rel_path, max_age=cache_timeout)
+        return super().send_static_file(filename)
+
+
 def create_app():
-    import os
-    import sys
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
     
     # Vercel: files at /var/task/ (project root)
@@ -38,7 +54,7 @@ def create_app():
     else:
         print(f"[VERCEL DEBUG] /var/task/templates NOT FOUND", flush=True)
 
-    app = Flask(__name__, template_folder=template_dir, static_folder=static_dir)
+    app = PortfolioFlask(__name__, template_folder=template_dir, static_folder=static_dir)
     app.config.from_object(Config)
 
     db.init_app(app)

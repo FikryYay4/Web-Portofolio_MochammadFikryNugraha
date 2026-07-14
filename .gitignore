@@ -37,8 +37,7 @@ ENV/
 env.bak/
 venv.bak/
 
-# Uploads and editor settings
-static/uploads/
+# Editor settings
 .vscode/
 .idea/
 

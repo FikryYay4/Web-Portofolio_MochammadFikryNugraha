@@ -51,7 +51,8 @@ def dashboard():
     messages_count = len(messages)
     # Count certificate files in static/uploads/certificates
     import os
-    cert_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'static', 'uploads', 'certificates'))
+    from flask import current_app
+    cert_dir = os.path.join(current_app.config['UPLOAD_FOLDER'], 'certificates')
     try:
         certificates = [f for f in os.listdir(cert_dir) if os.path.isfile(os.path.join(cert_dir, f))]
         certificates_count = len(certificates)
