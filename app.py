@@ -11,17 +11,25 @@ from models import db
 def create_app():
     import os
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-    # Vercel runtime: output directory contents are at /var/task/ (templates/, static/)
+    # Vercel runtime: output directory contents at /var/task/ (templates/, static/)
     # Local dev: templates/, static/ at project root
     vercel_template_dir = os.path.join('/var/task', 'templates')
     vercel_static_dir = os.path.join('/var/task', 'static')
     local_template_dir = os.path.join(BASE_DIR, 'templates')
     local_static_dir = os.path.join(BASE_DIR, 'static')
-    
+
     # Use Vercel paths if they exist, otherwise fallback to local
     template_dir = vercel_template_dir if os.path.isdir(vercel_template_dir) else local_template_dir
     static_dir = vercel_static_dir if os.path.isdir(vercel_static_dir) else local_static_dir
-    
+
+    # Debug: print resolved paths (visible in Vercel function logs)
+    print(f"[VERCEL DEBUG] template_dir={template_dir} exists={os.path.isdir(template_dir)}")
+    print(f"[VERCEL DEBUG] static_dir={static_dir} exists={os.path.isdir(static_dir)}")
+    print(f"[VERCEL DEBUG] BASE_DIR={BASE_DIR}")
+    print(f"[VERCEL DEBUG] /var/task/templates exists={os.path.isdir('/var/task/templates')}")
+    print(f"[VERCEL DEBUG] /var/task/static exists={os.path.isdir('/var/task/static')}")
+    print(f"[VERCEL DEBUG] cwd={os.getcwd()}")
+
     app = Flask(__name__, template_folder=template_dir, static_folder=static_dir)
     app.config.from_object(Config)
 
