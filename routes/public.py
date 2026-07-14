@@ -9,14 +9,17 @@ public_bp = Blueprint('public', __name__)
 @public_bp.route('/')
 @login_required
 def home():
+    import os
     profile = Profile.query.first()
     skills = Skill.query.order_by(Skill.order, Skill.id).all()
     projects = Project.query.order_by(Project.order, Project.id.desc()).all()
+    cert_dir = os.path.join(current_app.config['UPLOAD_FOLDER'], 'certificates')
+    cert_files = sorted([f for f in os.listdir(cert_dir) if os.path.isfile(os.path.join(cert_dir, f))]) if os.path.isdir(cert_dir) else []
     project_count = Project.query.count()
     skill_count = Skill.query.count()
     return render_template('pages/home.html', profile=profile, skills=skills,
                            projects=projects, project_count=project_count,
-                           skill_count=skill_count)
+                           skill_count=skill_count, cert_files=cert_files)
 
 @public_bp.route('/contact', methods=['POST'])
 @csrf_required

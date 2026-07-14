@@ -6,36 +6,27 @@
             <p class="section-header__subtitle">Recognized credentials and qualifications</p>
         </div>
 <div class="certificates__grid">
-            <!-- BNSP Graphic Design Depan -->
+            {% set labels = {
+                'bnsp_graphic_depan.jpg': 'BNSP Graphic Design (Front)',
+                'bnsp_graphic_belakang.jpg': 'BNSP Graphic Design (Back)',
+                'telkom_graphic.jpg': 'Telkom Graphic Design Training',
+                'karirnext_data_analyst_2026.jpg': 'Data Analyst KarirNext 2026',
+                'bnsp_network_depan.jpg': 'BNSP Network Engineering (Front)',
+                'bnsp_network_belakang.jpg': 'BNSP Network Engineering (Back)',
+                'data_analyst_general.jpg': 'Data Analyst General',
+                'toefl.jpg': 'TOEFL Certificate',
+                'toeic.jpg': 'TOEIC Certificate',
+                'sertifikat_DesignGraphic_Telkom_20260710_0001.jpg': 'Telkom Design Graphic Certificate',
+                'IMG_20250604_0001_page-0001.jpg': 'Certificate Page 1',
+                'IMG_20250604_0001_page-0002.jpg': 'Certificate Page 2'
+            } %}
+            {% for f in cert_files %}
+            {% set caption = labels.get(f, f.rsplit('.', 1)[0].replace('_', ' ').replace('-', ' ')) %}
             <div class="cert-item cert-zoom">
-                <img src="{{ url_for('static', filename='uploads/certificates/bnsp_graphic_depan.jpg') }}" alt="BNSP Graphic Design Front" onclick="openCertModal(this)">
-                <p class="cert-caption">BNSP Graphic Design (Front)</p>
+                <img src="{{ url_for('static', filename='uploads/certificates/' + f) }}" alt="{{ caption }}" onclick="openCertModal(this)">
+                <p class="cert-caption">{{ caption }}</p>
             </div>
-            <!-- BNSP Graphic Design Belakang -->
-            <div class="cert-item cert-zoom">
-                <img src="{{ url_for('static', filename='uploads/certificates/bnsp_graphic_belakang.jpg') }}" alt="BNSP Graphic Design Back" onclick="openCertModal(this)">
-                <p class="cert-caption">BNSP Graphic Design (Back)</p>
-            </div>
-            <!-- Telkom Graphic Design -->
-            <div class="cert-item cert-zoom">
-                <img src="{{ url_for('static', filename='uploads/certificates/telkom_graphic.jpg') }}" alt="Telkom Graphic Design Certificate" onclick="openCertModal(this)">
-                <p class="cert-caption">Telkom Graphic Design Training</p>
-            </div>
-            <!-- Data Analyst KarirNext -->
-            <div class="cert-item cert-zoom">
-                <img src="{{ url_for('static', filename='uploads/certificates/WhatsApp Image 2026-07-10 at 16.42.20.jpeg') }}" alt="Data Analyst KarirNext" onclick="openCertModal(this)">
-                <p class="cert-caption">Data Analyst KarirNext 2026</p>
-            </div>
-            <!-- BNSP Network Engineering Depan -->
-            <div class="cert-item cert-zoom">
-                <img src="{{ url_for('static', filename='uploads/certificates/bnsp_network_depan.jpg') }}" alt="BNSP Network Engineering Front" onclick="openCertModal(this)">
-                <p class="cert-caption">BNSP Network Engineering (Front)</p>
-            </div>
-            <!-- BNSP Network Engineering Belakang -->
-            <div class="cert-item cert-zoom">
-                <img src="{{ url_for('static', filename='uploads/certificates/bnsp_network_belakang.jpg') }}" alt="BNSP Network Engineering Back" onclick="openCertModal(this)">
-                <p class="cert-caption">BNSP Network Engineering (Back)</p>
-            </div>
+            {% endfor %}
         </div>
     </div>
 </section>
