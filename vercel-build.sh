@@ -1,6 +1,6 @@
 #!/bin/bash
 # Vercel build script for Flask app
-# Copy templates and static files to output directory
+# Copy all necessary files to output directory
 
 set -e
 
@@ -9,6 +9,11 @@ pip install -r requirements.txt
 
 echo "Creating output directory..."
 mkdir -p .vercel/output
+
+echo "Copying Python application files..."
+cp -r app.py config.py models.py requirements.txt .python-version .vercel/output/
+cp -r routes .vercel/output/
+cp -r utils .vercel/output/
 
 echo "Copying templates..."
 cp -r templates .vercel/output/
