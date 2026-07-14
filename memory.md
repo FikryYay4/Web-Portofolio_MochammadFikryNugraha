@@ -32,14 +32,11 @@ Stack: Flask + SQLAlchemy + Vercel deployment
 
 ---
 
-### 3. `models/project.py` — Tambah kolom `is_hidden`
+### 3. `models/project.py` — **Dihapus** kolom `is_hidden` (ganti dengan HiddenProject table)
 
-**Baris**: `project.py:18`
-```python
-is_hidden = db.Column(db.Boolean, default=False)
-```
+**Alasan**: Migration `ALTER TABLE projects ADD COLUMN is_hidden BOOLEAN DEFAULT FALSE` gagal di PostgreSQL (Vercel/Neon). Kolom tidak terbuat, query `SELECT projects.is_hidden` error `UndefinedColumn`.
 
-**Tujuan**: Kontrol visibilitas project dari admin. Public query filter `is_hidden=False`.
+**Solusi**: Pakai table `hidden_projects` (pattern sama kayak `hidden_certificates`). Hindari ALTER TABLE.
 
 ---
 
@@ -56,95 +53,140 @@ class HiddenCertificate(db.Model):
 
 ---
 
-### 5. `models/__init__.py` — Import HiddenCertificate
+### 5. `models/hidden_project.py` — Model baru (FIX PostgreSQL)
 
-**Baris**: `__init__.py:10`
+**File baru**: `models/hidden_project.py`
+```python
+class HiddenProject(db.Model):
+    __tablename__ = 'hidden_projects'
+    project_id = db.Column(db.Integer, db.ForeignKey('projects.id', ondelete='CASCADE'), primary_key=True)
+```
+
+**Tujuan**: Simpan daftar `project_id` yang di-hide. Hindari ALTER TABLE di PostgreSQL.
+
+---
+
+### 6. `models/__init__.py` — Import HiddenCertificate & HiddenProject
+
+**Baris**: `__init__.py:9-10`
 ```python
 from models.hidden_certificate import HiddenCertificate
+from models.hidden_project import HiddenProject
 ```
 
 ---
 
-### 6. `routes/admin.py` — Route `project_toggle_hidden`
+### 7. `routes/admin.py` — Route `project_toggle_hidden` (pakai HiddenProject table)
 
 **Baris**: `admin.py:224-232`
 ```python
 @admin_bp.route('/projects/<int:project_id>/toggle-hidden', methods=['POST'])
 def project_toggle_hidden(project_id):
-    project.is_hidden = not project.is_hidden
+    entry = HiddenProject.query.get(project_id)
+    if entry:
+        db.session.delete(entry)
+        flash('Project visible.', 'success')
+    else:
+        db.session.add(HiddenProject(project_id=project_id))
+        flash('Project hidden.', 'success')
+    db.session.commit()
 ```
-Toggle `is_hidden` boolean, commit, redirect ke projects_list.
+Toggle via `HiddenProject` table, bukan kolom `is_hidden`.
 
 ---
 
-### 7. `routes/admin.py` — Route `certificates_toggle_hidden`
+### 8. `routes/admin.py` — Route `certificates_toggle_hidden`
 
 **Baris**: `admin.py:380-397`
 ```python
 @admin_bp.route('/certificates/toggle-hidden', methods=['POST'])
 def certificates_toggle_hidden():
+    entry = HiddenCertificate.query.get(fname)
+    if entry:
+        db.session.delete(entry)
+        flash('Certificate visible.', 'success')
+    else:
+        db.session.add(HiddenCertificate(filename=fname))
+        flash('Certificate hidden.', 'success')
+    db.session.commit()
 ```
-Cek entry `HiddenCertificate.query.get(fname)`. Jika ada → delete (show). Jika tidak ada → add (hide).
 
 ---
 
-### 8. `routes/admin.py` — Update `certificates_list` include hidden status
+### 9. `routes/admin.py` — Update `certificates_list` include hidden status
 
 **Baris**: `admin.py:337-360`
 - Query `HiddenCertificate.query.all()` → set `hidden = {h.filename}`.
 - Setiap cert dict tambah key `'hidden': f in hidden`.
-- Template render `certificates.html` dengan status hidden.
 
 ---
 
-### 9. `routes/public.py` — Filter hidden items di public route
+### 10. `routes/admin.py` — Update `projects_list` pass hidden_ids
 
-**Baris**: `public.py:16`
+**Baris**: `admin.py:100-104`
 ```python
-projects = Project.query.filter_by(is_hidden=False).order_by(...)
-```
-**Baris**: `public.py:17,27`
-```python
-hidden_cert_filenames = {h.filename for h in HiddenCertificate.query.all()}
-# skip if f in hidden_cert_filenames
+@admin_bp.route('/projects')
+def projects_list():
+    projects = get_all_projects()
+    hidden_ids = {h.project_id for h in HiddenProject.query.all()}
+    return render_template('dashboard/projects.html', projects=projects, hidden_ids=hidden_ids)
 ```
 
 ---
 
-### 10. `templates/dashboard/projects.html` — Tambah kolom Status + Hide/Show button
+### 11. `routes/public.py` — Filter hidden items di public route
 
-**Baris**: `projects.html:25-26` — `<th>Status</th>`.
-**Baris**: `projects.html:41-47` — Badge "Hidden" (red) / "Visible" (green).
-**Baris**: `projects.html:49-52` — Form toggle: `url_for('admin.project_toggle_hidden', ...)`.
-- Button text: "Show" jika hidden, "Hide" jika visible.
-
----
-
-### 11. `templates/dashboard/certificates.html` — Tambah kolom Status + Hide/Show button
-
-**Baris**: `certificates.html:31-32` — `<th>Status</th>`.
-**Baris**: `certificates.html:43-48` — Badge warna.
-**Baris**: `certificates.html:51-54` — Form toggle: `url_for('admin.certificates_toggle_hidden')`.
-
----
-
-### 12. `app.py` — Auto-migrasi kolom `is_hidden`
-
-**Baris**: `app.py:89-98`
+**Baris**: `public.py:12-16, 29`
 ```python
-from sqlalchemy import inspect
-inspector = inspect(db.engine)
-cols = [c['name'] for c in inspector.get_columns('projects')]
-if 'is_hidden' not in cols:
-    db.session.execute('ALTER TABLE projects ADD COLUMN is_hidden BOOLEAN DEFAULT FALSE')
+hidden_project_ids = {h.project_id for h in HiddenProject.query.all()}
+projects = Project.query.filter(Project.id.notin_(hidden_project_ids)).order_by(...)
+project_count = Project.query.filter(Project.id.notin_(hidden_project_ids)).count()
 ```
-Jalan setiap app startup. Hanya tambah kolom jika belum ada. Support SQLite + PostgreSQL.
+
+**Baris**: `public.py:17, 27` — certificates filter via `HiddenCertificate`.
 
 ---
 
-### 13. `sections/certificates.html` — Perbaiki caption label (tidak disentuh)
+### 12. `templates/dashboard/projects.html` — Kolom Status + Hide/Show button
 
-Tidak diubah. Tapi pastikan label untuk `IMG_20250604_0001_page-0001.jpg` dan `IMG_20250604_0001_page-0002.jpg` sudah ada di dictionary `labels` (line 20-21).
+**Baris**: `projects.html:25` — `<th>Status</th>`.
+**Baris**: `projects.html:41-47` — Badge "Hidden" (red) / "Visible" (green) pakai `project.id in hidden_ids`.
+**Baris**: `projects.html:49-52` — Form toggle ke `admin.project_toggle_hidden`.
+
+---
+
+### 13. `templates/dashboard/certificates.html` — Kolom Status + Hide/Show button
+
+**Baris**: `certificates.html:31` — `<th>Status</th>`.
+**Baris**: `certificates.html:43-48` — Badge warna pakai `cert.hidden`.
+**Baris**: `certificates.html:51-54` — Form toggle ke `admin.certificates_toggle_hidden`.
+
+---
+
+### 14. `app.py` — Hapus migrasi ALTER TABLE `is_hidden`
+
+**Baris**: `app.py:87-95` (dihapus)
+```python
+# Sebelumnya:
+try:
+    from sqlalchemy import inspect
+    inspector = inspect(db.engine)
+    cols = [c['name'] for c in inspector.get_columns('projects')]
+    if 'is_hidden' not in cols:
+        db.session.execute('ALTER TABLE projects ADD COLUMN is_hidden BOOLEAN DEFAULT FALSE')
+except Exception as e:
+    print(...)
+
+# Sekarang hanya:
+db.create_all()
+seed_data()
+```
+
+---
+
+### 15. `sections/certificates.html` — Caption label existing
+
+Tidak diubah. Label untuk `IMG_20250604_0001_page-0001.jpg` dan `IMG_20250604_0001_page-0002.jpg` sudah ada di dictionary `labels` (line 20-21).
 
 ---
 
@@ -152,13 +194,25 @@ Tidak diubah. Tapi pastikan label untuk `IMG_20250604_0001_page-0001.jpg` dan `I
 
 | File | Tipe Perubahan |
 |------|---------------|
-| `app.py` | Edit (static route + migration) |
-| `routes/admin.py` | Edit (delete route + toggle routes + cert list) |
-| `routes/public.py` | Edit (filter hidden) |
-| `models/project.py` | Edit (tambah is_hidden) |
-| `models/__init__.py` | Edit (import HiddenCertificate) |
+| `app.py` | Edit (static route, hapus migration) |
+| `routes/admin.py` | Edit (delete route + toggle routes + cert list + projects list) |
+| `routes/public.py` | Edit (filter hidden via HiddenProject/HiddenCertificate) |
+| `models/project.py` | Edit (hapus is_hidden) |
+| `models/__init__.py` | Edit (import HiddenCertificate, HiddenProject) |
 | `models/hidden_certificate.py` | **Baru** |
-| `templates/dashboard/projects.html` | Edit (status kolom + toggle) |
+| `models/hidden_project.py` | **Baru** |
+| `templates/dashboard/projects.html` | Edit (status kolom + toggle via hidden_ids) |
 | `templates/dashboard/certificates.html` | Edit (status kolom + toggle) |
 
-Total: 8 file (1 baru, 7 edit).
+Total: 9 file (2 baru, 7 edit).
+
+---
+
+## Deployment History
+
+| Commit | Message | Status |
+|--------|---------|--------|
+| `34f8452` | Fix: image upload path, delete logic, hidden toggle (is_hidden column) | Failed (PostgreSQL ALTER TABLE error) |
+| `bfa0a61` | Fix: use HiddenProject table instead of is_hidden column | **Deployed** ✅ |
+
+**Production URL**: `https://web-portofolio-mochammad-fikry-nugr.vercel.app`
