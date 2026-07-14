@@ -4,10 +4,13 @@
 <div class="dashboard">
     <div class="dashboard__header">
         <h1 class="dashboard__title">Skills</h1>
-        <a href="{{ url_for('admin.skill_create') }}" class="btn btn--primary" style="margin-left:12px;">
+        <div class="dashboard__header-actions">
+        <a href="{{ url_for('admin.dashboard') }}" class="btn btn--ghost">Dashboard</a>
+        <a href="{{ url_for('admin.skill_create') }}" class="btn btn--primary">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
             Add New
         </a>
+        </div>
     </div>
     {% if skill is none %}
     <form action="{{ url_for('admin.skill_create') }}" method="POST" enctype="multipart/form-data" class="glass-card" style="padding:16px; margin-top:12px;">

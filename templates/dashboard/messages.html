@@ -4,6 +4,9 @@
 <div class="dashboard">
     <div class="dashboard__header">
         <h1 class="dashboard__title">Messages</h1>
+        <div class="dashboard__header-actions">
+        <a href="{{ url_for('admin.dashboard') }}" class="btn btn--ghost">Dashboard</a>
+        </div>
     </div>
 
     {% if messages %}

@@ -1226,7 +1226,8 @@ a {
 }
 
 /* Admin dashboard header spacing */
-.dashboard__header { margin-bottom: 24px; }
+.dashboard__header { margin-bottom: 24px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; }
+.dashboard__header-actions { display:flex; align-items:center; gap:8px; }
 
 .animated-tabs {
     width: 100%;
