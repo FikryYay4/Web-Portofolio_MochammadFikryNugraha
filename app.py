@@ -11,7 +11,8 @@ from models import db
 def create_app():
     import os
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-    # Vercel runtime: output directory contents at /var/task/ (templates/, static/)
+    
+    # Vercel default: files at /var/task/ (project root)
     # Local dev: templates/, static/ at project root
     vercel_template_dir = os.path.join('/var/task', 'templates')
     vercel_static_dir = os.path.join('/var/task', 'static')

@@ -1,8 +1,4 @@
 {
-  "buildCommand": "bash vercel-build.sh",
-  "outputDirectory": ".vercel/output",
-  "devCommand": "python wsgi.py",
-  "installCommand": "pip install -r requirements.txt",
   "functions": {
     "wsgi.py": {
       "maxDuration": 30
@@ -10,15 +6,11 @@
   },
   "rewrites": [
     {
-      "source": "/static/(.*)",
-      "destination": "/static/$1"
-    },
-    {
       "source": "/(.*)",
       "destination": "/wsgi.py"
     }
   ],
   "env": {
-    "FLASK_DEBUG": "false"
+    "VERCEL": "1"
   }
 }
