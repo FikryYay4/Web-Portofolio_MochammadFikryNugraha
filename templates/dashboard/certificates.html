@@ -23,11 +23,12 @@
     {% if certificates %}
     <div class="dashboard__table-wrapper">
         <table class="dashboard__table">
-            <thead>
+                <thead>
                 <tr>
                     <th>Image</th>
                     <th>Filename</th>
                     <th>Size</th>
+                    <th>Status</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -39,7 +40,19 @@
                     </td>
                     <td><code>{{ cert.filename }}</code></td>
                     <td>{{ cert.size }}</td>
+                    <td>
+                        {% if cert.hidden %}
+                            <span class="tag tag--sm" style="background:rgba(255,0,0,0.15);color:#ff4444;">Hidden</span>
+                        {% else %}
+                            <span class="tag tag--sm" style="background:rgba(0,255,0,0.15);color:#44ff44;">Visible</span>
+                        {% endif %}
+                    </td>
                     <td class="dashboard__actions-cell">
+                        <form action="{{ url_for('admin.certificates_toggle_hidden') }}" method="POST" class="inline-form">
+                            <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+                            <input type="hidden" name="filename" value="{{ cert.filename }}">
+                            <button type="submit" class="btn btn--ghost btn--sm">{{ 'Show' if cert.hidden else 'Hide' }}</button>
+                        </form>
                         <form action="{{ url_for('admin.certificates_delete') }}" method="POST" class="inline-form" onsubmit="return confirm('Delete this certificate?')">
                             <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
                             <input type="hidden" name="filename" value="{{ cert.filename }}">

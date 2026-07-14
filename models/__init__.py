@@ -7,3 +7,4 @@ from models.skill import Skill
 from models.project import Project
 from models.project_image import ProjectImage
 from models.message import Message
+from models.hidden_certificate import HiddenCertificate

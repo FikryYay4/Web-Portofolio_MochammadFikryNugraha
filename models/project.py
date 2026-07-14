@@ -15,6 +15,7 @@ class Project(db.Model):
     category = db.Column(db.String(50))
     year = db.Column(db.Integer)
     featured = db.Column(db.Boolean, default=False)
+    is_hidden = db.Column(db.Boolean, default=False)
     order = db.Column(db.Integer, default=0)
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
 

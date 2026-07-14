@@ -47,9 +47,14 @@ def create_app():
         if os.path.exists(static_path):
             return send_from_directory(static_dir, filename)
         upload_dir = current_app.config['UPLOAD_FOLDER']
-        upload_path = os.path.join(upload_dir, filename)
+        path_components = filename.split('/')
+        if path_components and path_components[0] == 'uploads':
+            filename_clean = '/'.join(path_components[1:])
+        else:
+            filename_clean = filename
+        upload_path = os.path.join(upload_dir, filename_clean)
         if os.path.exists(upload_path):
-            return send_from_directory(upload_dir, filename)
+            return send_from_directory(upload_dir, filename_clean)
         return ('Not found', 404)
 
     db.init_app(app)
@@ -81,6 +86,16 @@ def create_app():
 
     with app.app_context():
         db.create_all()
+        try:
+            from sqlalchemy import inspect
+            inspector = inspect(db.engine)
+            cols = [c['name'] for c in inspector.get_columns('projects')]
+            if 'is_hidden' not in cols:
+                db.session.execute('ALTER TABLE projects ADD COLUMN is_hidden BOOLEAN DEFAULT FALSE')
+                db.session.commit()
+                print('[MIGRATE] Added is_hidden to projects', flush=True)
+        except Exception as e:
+            print(f'[MIGRATE] is_hidden column check failed: {e}', flush=True)
         try:
             seed_data()
         except Exception as e:

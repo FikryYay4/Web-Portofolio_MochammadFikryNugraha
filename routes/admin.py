@@ -221,6 +221,17 @@ def project_delete(project_id):
     return redirect(url_for('admin.projects_list'))
 
 
+@admin_bp.route('/projects/<int:project_id>/toggle-hidden', methods=['POST'])
+@admin_required
+@csrf_required
+def project_toggle_hidden(project_id):
+    project = get_project(project_id)
+    project.is_hidden = not project.is_hidden
+    db.session.commit()
+    flash(f"Project {'hidden' if project.is_hidden else 'visible'}.", 'success')
+    return redirect(url_for('admin.projects_list'))
+
+
 @admin_bp.route('/projects/<int:project_id>/images/<int:image_id>/delete', methods=['POST'])
 @admin_required
 @csrf_required
@@ -326,6 +337,8 @@ def messages_count_api():
 def certificates_list():
     import os
     from flask import current_app
+    from models.hidden_certificate import HiddenCertificate
+    hidden = {h.filename for h in HiddenCertificate.query.all()}
     seen = set()
     certs = []
     skip = {'.gitkeep', '.gitignore', 'thumbs.db', '.ds_store'}
@@ -339,7 +352,11 @@ def certificates_list():
                 if os.path.isfile(fp) and f not in seen:
                     seen.add(f)
                     sz = os.path.getsize(fp)
-                    certs.append({'filename': f, 'size': f'{sz/1024:.1f} KB' if sz < 1048576 else f'{sz/1048576:.1f} MB'})
+                    certs.append({
+                        'filename': f,
+                        'size': f'{sz/1024:.1f} KB' if sz < 1048576 else f'{sz/1048576:.1f} MB',
+                        'hidden': f in hidden,
+                    })
     return render_template('dashboard/certificates.html', certificates=certs)
 
 
@@ -360,6 +377,26 @@ def certificates_upload():
     return redirect(url_for('admin.certificates_list'))
 
 
+@admin_bp.route('/certificates/toggle-hidden', methods=['POST'])
+@admin_required
+@csrf_required
+def certificates_toggle_hidden():
+    from models.hidden_certificate import HiddenCertificate
+    fname = request.form.get('filename', '')
+    if not fname:
+        flash('No filename provided.', 'error')
+        return redirect(url_for('admin.certificates_list'))
+    entry = HiddenCertificate.query.get(fname)
+    if entry:
+        db.session.delete(entry)
+        flash('Certificate visible.', 'success')
+    else:
+        db.session.add(HiddenCertificate(filename=fname))
+        flash('Certificate hidden.', 'success')
+    db.session.commit()
+    return redirect(url_for('admin.certificates_list'))
+
+
 @admin_bp.route('/certificates/delete', methods=['POST'])
 @admin_required
 @csrf_required
@@ -370,18 +407,16 @@ def certificates_delete():
         return redirect(url_for('admin.certificates_list'))
     import os
     from flask import current_app
-    bases = [os.path.join(current_app.config['UPLOAD_FOLDER'], 'certificates'),
-             os.path.join(current_app.config['STATIC_DIR'], 'uploads', 'certificates')]
-    for cert_dir in bases:
-        fpath = os.path.normpath(os.path.join(cert_dir, fname))
-        if fpath.startswith(os.path.normpath(cert_dir)) and os.path.exists(fpath):
-            try:
-                os.remove(fpath)
-                flash('Certificate deleted!', 'success')
-            except OSError:
-                flash('Could not delete file (read-only?).', 'error')
-            return redirect(url_for('admin.certificates_list'))
-    flash('File not found.', 'error')
+    cert_dir = os.path.join(current_app.config['UPLOAD_FOLDER'], 'certificates')
+    fpath = os.path.normpath(os.path.join(cert_dir, fname))
+    if fpath.startswith(os.path.normpath(cert_dir)) and os.path.exists(fpath):
+        try:
+            os.remove(fpath)
+            flash('Certificate deleted!', 'success')
+        except OSError:
+            flash('Could not delete file (read-only?).', 'error')
+    else:
+        flash('Bundled file cannot be deleted from here.', 'error')
     return redirect(url_for('admin.certificates_list'))
 
 

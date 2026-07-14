@@ -10,9 +10,11 @@ public_bp = Blueprint('public', __name__)
 @login_required
 def home():
     import os
+    from models.hidden_certificate import HiddenCertificate
     profile = Profile.query.first()
     skills = Skill.query.order_by(Skill.order, Skill.id).all()
-    projects = Project.query.order_by(Project.order, Project.id.desc()).all()
+    projects = Project.query.filter_by(is_hidden=False).order_by(Project.order, Project.id.desc()).all()
+    hidden_cert_filenames = {h.filename for h in HiddenCertificate.query.all()}
     seen = set()
     cert_files = []
     for base in [os.path.join(current_app.config['STATIC_DIR'], 'uploads', 'certificates'),
@@ -22,8 +24,9 @@ def home():
                 fp = os.path.join(base, f)
                 if os.path.isfile(fp) and f not in seen:
                     seen.add(f)
-                    cert_files.append(f)
-    project_count = Project.query.count()
+                    if f not in hidden_cert_filenames:
+                        cert_files.append(f)
+    project_count = Project.query.filter_by(is_hidden=False).count()
     skill_count = Skill.query.count()
     return render_template('pages/home.html', profile=profile, skills=skills,
                            projects=projects, project_count=project_count,
