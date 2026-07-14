@@ -2,10 +2,7 @@
   "functions": {
     "wsgi.py": {
       "maxDuration": 30,
-      "includeFiles": [
-        "templates/**",
-        "static/**"
-      ]
+      "includeFiles": "templates/**,static/**"
     }
   },
   "rewrites": [
