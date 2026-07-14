@@ -1,7 +1,6 @@
 {
-  "framework": "flask",
-  "buildCommand": "pip install -r requirements.txt",
-  "outputDirectory": ".",
+  "buildCommand": "bash vercel-build.sh",
+  "outputDirectory": ".vercel/output",
   "devCommand": "python wsgi.py",
   "installCommand": "pip install -r requirements.txt",
   "functions": {
