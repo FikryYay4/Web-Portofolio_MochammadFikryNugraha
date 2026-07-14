@@ -1,0 +1,23 @@
+# Vercel ignore
+.git/
+__pycache__/
+*.py[cod]
+*.db
+*.db-journal
+*.sqlite
+.env
+.venv/
+venv/
+instance/
+static/uploads/
+.vscode/
+.idea/
+*.log
+.DS_Store
+vercel.json
+railway.json
+Dockerfile
+seed_railway.py
+run_tests.py
+*.md
+LICENSE
