@@ -41,6 +41,17 @@ def create_app():
     app = Flask(__name__, template_folder=template_dir, static_folder=static_dir)
     app.config.from_object(Config)
 
+    # Debug: comprehensive /var/task listing
+    import os
+    print("=" * 80, flush=True)
+    print(f"cwd: {os.getcwd()}", flush=True)
+    if os.path.isdir('/var/task'):
+        for root, dirs, files in os.walk('/var/task'):
+            print(root, flush=True)
+            if 'templates' in root:
+                print(f"  TEMPLATES: {files}", flush=True)
+    print("=" * 80, flush=True)
+
     db.init_app(app)
     Migrate(app, db)
 
