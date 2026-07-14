@@ -42,11 +42,14 @@ def create_app():
 
     @app.route('/static/<path:filename>', endpoint='static')
     def static_from_anywhere(filename):
+        static_path = os.path.join(static_dir, filename)
+        if os.path.exists(static_path):
+            return send_from_directory(static_dir, filename)
         upload_dir = current_app.config['UPLOAD_FOLDER']
         upload_path = os.path.join(upload_dir, filename)
         if os.path.exists(upload_path):
             return send_from_directory(upload_dir, filename)
-        return send_from_directory(static_dir, filename)
+        return ('Not found', 404)
 
     db.init_app(app)
     Migrate(app, db)

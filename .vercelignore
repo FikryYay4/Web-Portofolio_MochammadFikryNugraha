@@ -22,5 +22,8 @@ run_tests.py
 *.md
 LICENSE
 
-# Exclude uploaded files from Vercel deployment (user uploads via admin to /tmp/)
-static/uploads/
+# Exclude large video uploads but keep images
+static/uploads/**/*.mp4
+static/uploads/**/*.webm
+static/uploads/**/*.mov
+static/uploads/**/*.avi

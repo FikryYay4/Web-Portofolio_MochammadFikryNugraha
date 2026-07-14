@@ -1,17 +1,14 @@
 {
-  "services": {
-    "web": {
-      "root": ".",
-      "entrypoint": "api/index.py"
+  "builds": [
+    {
+      "src": "api/index.py",
+      "use": "@vercel/python"
     }
-  },
+  ],
   "rewrites": [
     {
       "source": "/(.*)",
-      "destination": {
-        "type": "service",
-        "service": "web"
-      }
+      "destination": "/api/index.py"
     }
   ]
 }
