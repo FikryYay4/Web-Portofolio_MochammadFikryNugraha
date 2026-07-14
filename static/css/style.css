@@ -246,6 +246,17 @@ a {
     transition: 0.3s;
 }
 
+.navbar__auth {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.navbar__auth-btn {
+    font-size: 0.85rem;
+    padding: 6px 14px;
+}
+
 /* Sections */
 .section {
     padding: 100px 0;
@@ -1430,7 +1441,8 @@ a {
         display: none;
     }
 
-    .navbar__cta {
+    .navbar__cta,
+    .navbar__auth {
         display: none;
     }
 
