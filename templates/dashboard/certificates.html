@@ -5,7 +5,7 @@
     <div class="dashboard__header">
         <h1 class="dashboard__title">Certificates</h1>
         <div class="dashboard__header-actions">
-        <a href="{{ url_for('admin.dashboard') }}" class="btn btn--ghost">Dashboard</a>
+        <a href="{{ url_for('admin.dashboard') }}" class="btn btn--ghost">&larr; Back to Dashboard</a>
         </div>
     </div>
 
@@ -40,8 +40,9 @@
                     <td><code>{{ cert.filename }}</code></td>
                     <td>{{ cert.size }}</td>
                     <td class="dashboard__actions-cell">
-                        <form action="{{ url_for('admin.certificates_delete', filename=cert.filename) }}" method="POST" class="inline-form" onsubmit="return confirm('Delete this certificate?')">
+                        <form action="{{ url_for('admin.certificates_delete') }}" method="POST" class="inline-form" onsubmit="return confirm('Delete this certificate?')">
                             <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+                            <input type="hidden" name="filename" value="{{ cert.filename }}">
                             <button type="submit" class="btn btn--ghost btn--sm btn--danger">Delete</button>
                         </form>
                     </td>

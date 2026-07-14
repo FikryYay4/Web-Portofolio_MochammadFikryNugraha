@@ -5,7 +5,10 @@
 <div class="dashboard">
     <div class="dashboard__header">
         <h1 class="dashboard__title">Add Project</h1>
+        <div class="dashboard__header-actions">
+        <a href="{{ url_for('admin.dashboard') }}" class="btn btn--ghost">&larr; Dashboard</a>
         <a href="{{ url_for('admin.projects_list') }}" class="btn btn--ghost">Back</a>
+        </div>
     </div>
 
     <form class="dashboard__form glass-card" action="{{ url_for('admin.project_create') }}" method="POST" enctype="multipart/form-data">

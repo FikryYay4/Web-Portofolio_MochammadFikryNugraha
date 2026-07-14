@@ -49,15 +49,17 @@ def dashboard():
     messages = Message.query.order_by(Message.created_at.desc()).all()
     profile = Profile.query.first()
     messages_count = len(messages)
-    # Count certificate files in static/uploads/certificates
+    # Count certificate files in both dirs
     import os
     from flask import current_app
-    cert_dir = os.path.join(current_app.config['UPLOAD_FOLDER'], 'certificates')
-    try:
-        certificates = [f for f in os.listdir(cert_dir) if os.path.isfile(os.path.join(cert_dir, f))]
-        certificates_count = len(certificates)
-    except Exception:
-        certificates_count = 0
+    seen = set()
+    for base in [os.path.join(current_app.config['STATIC_DIR'], 'uploads', 'certificates'),
+                 os.path.join(current_app.config['UPLOAD_FOLDER'], 'certificates')]:
+        if os.path.isdir(base):
+            for f in os.listdir(base):
+                if os.path.isfile(os.path.join(base, f)) and f not in seen:
+                    seen.add(f)
+    certificates_count = len(seen)
     return render_template('dashboard/index.html',
                            projects=projects, skills=skills,
                           messages=messages, messages_count=messages_count,
