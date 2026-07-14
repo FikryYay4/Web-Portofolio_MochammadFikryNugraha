@@ -1,19 +1,22 @@
 {
-  "version": 2,
-  "builds": [
-    {
-      "src": "wsgi.py",
-      "use": "@vercel/python"
+  "framework": "flask",
+  "buildCommand": "pip install -r requirements.txt",
+  "outputDirectory": ".",
+  "devCommand": "python wsgi.py",
+  "installCommand": "pip install -r requirements.txt",
+  "functions": {
+    "wsgi.py": {
+      "maxDuration": 30
     }
-  ],
-  "routes": [
+  },
+  "rewrites": [
     {
-      "src": "/static/(.*)",
-      "dest": "/static/$1"
+      "source": "/static/(.*)",
+      "destination": "/static/$1"
     },
     {
-      "src": "/(.*)",
-      "dest": "/wsgi.py"
+      "source": "/(.*)",
+      "destination": "/wsgi.py"
     }
   ],
   "env": {
