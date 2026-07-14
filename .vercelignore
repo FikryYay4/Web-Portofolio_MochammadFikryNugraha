@@ -21,3 +21,6 @@ seed_railway.py
 run_tests.py
 *.md
 LICENSE
+
+# Exclude uploaded files from Vercel deployment (user uploads via admin to /tmp/)
+static/uploads/

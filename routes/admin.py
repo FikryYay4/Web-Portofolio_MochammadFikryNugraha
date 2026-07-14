@@ -319,6 +319,59 @@ def messages_count_api():
 
 
 
+@admin_bp.route('/certificates')
+@admin_required
+def certificates_list():
+    import os
+    from flask import current_app
+    cert_dir = os.path.join(current_app.config['UPLOAD_FOLDER'], 'certificates')
+    os.makedirs(cert_dir, exist_ok=True)
+    certs = []
+    for f in sorted(os.listdir(cert_dir)):
+        fp = os.path.join(cert_dir, f)
+        if os.path.isfile(fp):
+            sz = os.path.getsize(fp)
+            certs.append({'filename': f, 'size': f'{sz/1024:.1f} KB' if sz < 1048576 else f'{sz/1048576:.1f} MB'})
+    return render_template('dashboard/certificates.html', certificates=certs)
+
+
+@admin_bp.route('/certificates/upload', methods=['POST'])
+@admin_required
+@csrf_required
+def certificates_upload():
+    file = request.files.get('certificate')
+    if file and file.filename:
+        from services.upload_service import save_file
+        fname = save_file(file, subfolder='certificates')
+        if fname:
+            flash('Certificate uploaded!', 'success')
+        else:
+            flash('Invalid file type.', 'error')
+    else:
+        flash('No file selected.', 'error')
+    return redirect(url_for('admin.certificates_list'))
+
+
+@admin_bp.route('/certificates/delete', methods=['POST'])
+@admin_required
+@csrf_required
+def certificates_delete():
+    fname = request.form.get('filename', '')
+    if not fname:
+        flash('No filename provided.', 'error')
+        return redirect(url_for('admin.certificates_list'))
+    import os
+    from flask import current_app
+    cert_dir = os.path.join(current_app.config['UPLOAD_FOLDER'], 'certificates')
+    fpath = os.path.normpath(os.path.join(cert_dir, fname))
+    if fpath.startswith(os.path.normpath(cert_dir)) and os.path.exists(fpath):
+        os.remove(fpath)
+        flash('Certificate deleted!', 'success')
+    else:
+        flash('File not found.', 'error')
+    return redirect(url_for('admin.certificates_list'))
+
+
 @admin_bp.route('/messages/<int:message_id>/read', methods=['POST'])
 @admin_required
 @csrf_required

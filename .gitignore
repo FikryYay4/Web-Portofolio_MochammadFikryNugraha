@@ -43,3 +43,9 @@ venv.bak/
 
 .vercel
 .env*
+
+static/uploads/*
+!static/uploads/
+!static/uploads/**/
+!static/uploads/.gitkeep
+!static/uploads/**/.gitkeep

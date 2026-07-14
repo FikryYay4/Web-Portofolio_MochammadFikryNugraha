@@ -1,0 +1,59 @@
+{% extends 'base.html' %}{% block title %}Manage Certificates{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+    <div class="dashboard__header">
+        <h1 class="dashboard__title">Certificates</h1>
+        <div class="dashboard__header-actions">
+        <a href="{{ url_for('admin.dashboard') }}" class="btn btn--ghost">Dashboard</a>
+        </div>
+    </div>
+
+    <div class="glass-card" style="padding:16px; margin-bottom:16px;">
+        <h3>Upload New Certificate</h3>
+        <form action="{{ url_for('admin.certificates_upload') }}" method="POST" enctype="multipart/form-data">
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}" />
+            <div style="margin:8px 0;">
+                <input type="file" name="certificate" accept="image/*" required>
+            </div>
+            <button type="submit" class="btn btn--primary">Upload</button>
+        </form>
+    </div>
+
+    {% if certificates %}
+    <div class="dashboard__table-wrapper">
+        <table class="dashboard__table">
+            <thead>
+                <tr>
+                    <th>Image</th>
+                    <th>Filename</th>
+                    <th>Size</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for cert in certificates %}
+                <tr>
+                    <td>
+                        <img src="{{ url_for('static', filename='uploads/certificates/' + cert.filename) }}" alt="{{ cert.filename }}" style="width:80px;height:60px;object-fit:cover;border-radius:4px;">
+                    </td>
+                    <td><code>{{ cert.filename }}</code></td>
+                    <td>{{ cert.size }}</td>
+                    <td class="dashboard__actions-cell">
+                        <form action="{{ url_for('admin.certificates_delete', filename=cert.filename) }}" method="POST" class="inline-form" onsubmit="return confirm('Delete this certificate?')">
+                            <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+                            <button type="submit" class="btn btn--ghost btn--sm btn--danger">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="dashboard__empty glass-card">
+        <p>No certificates uploaded yet. Upload certificate images above.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
