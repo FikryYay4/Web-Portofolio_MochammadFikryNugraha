@@ -19,10 +19,6 @@
       "destination": "/wsgi.py"
     }
   ],
-  "includeFiles": [
-    "templates/**",
-    "static/**"
-  ],
   "env": {
     "FLASK_DEBUG": "false"
   }
