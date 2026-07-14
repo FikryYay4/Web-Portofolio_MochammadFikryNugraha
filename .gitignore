@@ -44,8 +44,9 @@ venv.bak/
 .vercel
 .env*
 
-static/uploads/*
-!static/uploads/
-!static/uploads/**/
-!static/uploads/.gitkeep
-!static/uploads/**/.gitkeep
+static/uploads/**/*.mp4
+static/uploads/**/*.webm
+static/uploads/**/*.avi
+static/uploads/**/*.mov
+static/uploads/**/*.mkv
+static/uploads/**/*.wmv

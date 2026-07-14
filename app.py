@@ -1,5 +1,5 @@
 import os
-from flask import Flask, send_from_directory
+from flask import Flask, send_from_directory, current_app
 from flask_migrate import Migrate
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
@@ -7,23 +7,6 @@ from dotenv import load_dotenv
 load_dotenv()
 from config import Config
 from models import db
-
-
-class PortfolioFlask(Flask):
-    """Custom Flask subclass that serves upload files from UPLOAD_FOLDER (e.g. /tmp/uploads on Vercel).
-    All template references use url_for('static', filename='uploads/...') which calls
-    send_static_file; this override checks the writable upload path first.
-    """
-
-    def send_static_file(self, filename):
-        if filename.startswith('uploads/'):
-            upload_dir = self.config.get('UPLOAD_FOLDER')
-            rel_path = filename[8:]  # strip 'uploads/' prefix
-            full_path = os.path.join(upload_dir, rel_path)
-            if os.path.exists(full_path):
-                cache_timeout = self.get_send_file_max_age(filename)
-                return send_from_directory(upload_dir, rel_path, max_age=cache_timeout)
-        return super().send_static_file(filename)
 
 
 def create_app():
@@ -54,8 +37,16 @@ def create_app():
     else:
         print(f"[VERCEL DEBUG] /var/task/templates NOT FOUND", flush=True)
 
-    app = PortfolioFlask(__name__, template_folder=template_dir, static_folder=static_dir)
+    app = Flask(__name__, template_folder=template_dir, static_folder=None)
     app.config.from_object(Config)
+
+    @app.route('/static/<path:filename>', endpoint='static')
+    def static_from_anywhere(filename):
+        upload_dir = current_app.config['UPLOAD_FOLDER']
+        upload_path = os.path.join(upload_dir, filename)
+        if os.path.exists(upload_path):
+            return send_from_directory(upload_dir, filename)
+        return send_from_directory(static_dir, filename)
 
     db.init_app(app)
     Migrate(app, db)
@@ -86,7 +77,10 @@ def create_app():
 
     with app.app_context():
         db.create_all()
-        seed_data()
+        try:
+            seed_data()
+        except Exception as e:
+            print(f'[WARN] seed_data failed: {e}', flush=True)
 
     return app
 

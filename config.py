@@ -22,7 +22,10 @@ class Config:
         if clean_qs:
             clean_url += f'?{clean_qs}'
         DATABASE_URL = clean_url
-    SQLALCHEMY_DATABASE_URI = DATABASE_URL or f'sqlite:///{os.path.join(BASE_DIR, "portfolio.db")}'
+    if not DATABASE_URL and os.environ.get('VERCEL') == '1':
+        SQLALCHEMY_DATABASE_URI = 'sqlite:////tmp/portfolio.db'
+    else:
+        SQLALCHEMY_DATABASE_URI = DATABASE_URL or f'sqlite:///{os.path.join(BASE_DIR, "portfolio.db")}'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_ENGINE_OPTIONS = {
         'pool_pre_ping': True,
