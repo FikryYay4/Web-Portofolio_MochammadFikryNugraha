@@ -11,7 +11,7 @@ echo "Creating output directory..."
 mkdir -p .vercel/output
 
 echo "Copying Python application files..."
-cp -r app.py config.py models.py requirements.txt .python-version .vercel/output/
+cp -r app.py config.py models requirements.txt .python-version .vercel/output/
 cp -r routes .vercel/output/
 cp -r utils .vercel/output/
 
