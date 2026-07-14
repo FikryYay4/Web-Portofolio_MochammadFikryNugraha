@@ -326,7 +326,7 @@ def certificates_list():
     from flask import current_app
     seen = set()
     certs = []
-    for base in [os.path.join(current_app.static_folder, 'uploads', 'certificates'),
+    for base in [os.path.join(current_app.config['STATIC_DIR'], 'uploads', 'certificates'),
                  os.path.join(current_app.config['UPLOAD_FOLDER'], 'certificates')]:
         if os.path.isdir(base):
             for f in sorted(os.listdir(base)):

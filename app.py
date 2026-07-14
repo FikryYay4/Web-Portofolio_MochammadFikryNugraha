@@ -39,6 +39,7 @@ def create_app():
 
     app = Flask(__name__, template_folder=template_dir, static_folder=None)
     app.config.from_object(Config)
+    app.config['STATIC_DIR'] = static_dir
 
     @app.route('/static/<path:filename>', endpoint='static')
     def static_from_anywhere(filename):
