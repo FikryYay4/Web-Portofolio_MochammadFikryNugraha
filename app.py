@@ -9,7 +9,18 @@ from models import db
 
 
 def create_app():
-    app = Flask(__name__)
+    import os
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    # Vercel output directory structure: templates/ and static/ are in .vercel/output/
+    template_dir = os.path.join(BASE_DIR, '.vercel', 'output', 'templates')
+    static_dir = os.path.join(BASE_DIR, '.vercel', 'output', 'static')
+    # Fallback to local development paths
+    if not os.path.isdir(template_dir):
+        template_dir = os.path.join(BASE_DIR, 'templates')
+    if not os.path.isdir(static_dir):
+        static_dir = os.path.join(BASE_DIR, 'static')
+    
+    app = Flask(__name__, template_folder=template_dir, static_folder=static_dir)
     app.config.from_object(Config)
 
     db.init_app(app)
