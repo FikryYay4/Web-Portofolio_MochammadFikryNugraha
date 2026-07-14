@@ -8,8 +8,20 @@ class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY', secrets.token_hex(32))
     # Support PostgreSQL (Neon/Supabase) via DATABASE_URL, fallback to SQLite for local
     DATABASE_URL = os.environ.get('DATABASE_URL')
-    if DATABASE_URL and DATABASE_URL.startswith('postgres://'):
-        DATABASE_URL = DATABASE_URL.replace('postgres://', 'postgresql://', 1)
+    if DATABASE_URL:
+        if DATABASE_URL.startswith('postgres://'):
+            DATABASE_URL = DATABASE_URL.replace('postgres://', 'postgresql://', 1)
+        # Remove psycopg2-incompatible params; handle via engine options
+        from urllib.parse import urlparse, urlencode, parse_qs
+        parsed = urlparse(DATABASE_URL)
+        qs = parse_qs(parsed.query)
+        pgbouncer = qs.pop('pgbouncer', None)
+        prepare = qs.pop('prepare_threshold', None)
+        clean_qs = urlencode(qs, doseq=True) if qs else ''
+        clean_url = f'{parsed.scheme}://{parsed.netloc}{parsed.path}'
+        if clean_qs:
+            clean_url += f'?{clean_qs}'
+        DATABASE_URL = clean_url
     SQLALCHEMY_DATABASE_URI = DATABASE_URL or f'sqlite:///{os.path.join(BASE_DIR, "portfolio.db")}'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_ENGINE_OPTIONS = {
