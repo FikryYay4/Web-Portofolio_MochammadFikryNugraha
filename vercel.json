@@ -1,18 +1,7 @@
 {
   "functions": {
-    "wsgi.py": {
-      "maxDuration": 30,
-      "includeFiles": "templates/**,static/**"
+    "api/index.py": {
+      "maxDuration": 30
     }
-  },
-  "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/wsgi.py"
-    }
-  ],
-  "env": {
-    "VERCEL": "1",
-    "FLASK_DEBUG": "false"
   }
 }
