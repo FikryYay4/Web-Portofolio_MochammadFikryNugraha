@@ -324,14 +324,17 @@ def messages_count_api():
 def certificates_list():
     import os
     from flask import current_app
-    cert_dir = os.path.join(current_app.config['UPLOAD_FOLDER'], 'certificates')
-    os.makedirs(cert_dir, exist_ok=True)
+    seen = set()
     certs = []
-    for f in sorted(os.listdir(cert_dir)):
-        fp = os.path.join(cert_dir, f)
-        if os.path.isfile(fp):
-            sz = os.path.getsize(fp)
-            certs.append({'filename': f, 'size': f'{sz/1024:.1f} KB' if sz < 1048576 else f'{sz/1048576:.1f} MB'})
+    for base in [os.path.join(current_app.static_folder, 'uploads', 'certificates'),
+                 os.path.join(current_app.config['UPLOAD_FOLDER'], 'certificates')]:
+        if os.path.isdir(base):
+            for f in sorted(os.listdir(base)):
+                fp = os.path.join(base, f)
+                if os.path.isfile(fp) and f not in seen:
+                    seen.add(f)
+                    sz = os.path.getsize(fp)
+                    certs.append({'filename': f, 'size': f'{sz/1024:.1f} KB' if sz < 1048576 else f'{sz/1048576:.1f} MB'})
     return render_template('dashboard/certificates.html', certificates=certs)
 
 
