@@ -1,0 +1,14 @@
+# OS
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Stitch template (reference only, not deployed)
+stitch_template/
