@@ -11,14 +11,16 @@ from models import db
 def create_app():
     import os
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-    # Vercel output directory structure: templates/ and static/ are in .vercel/output/
-    template_dir = os.path.join(BASE_DIR, '.vercel', 'output', 'templates')
-    static_dir = os.path.join(BASE_DIR, '.vercel', 'output', 'static')
-    # Fallback to local development paths
-    if not os.path.isdir(template_dir):
-        template_dir = os.path.join(BASE_DIR, 'templates')
-    if not os.path.isdir(static_dir):
-        static_dir = os.path.join(BASE_DIR, 'static')
+    # Vercel runtime: output directory contents are at /var/task/ (templates/, static/)
+    # Local dev: templates/, static/ at project root
+    vercel_template_dir = os.path.join('/var/task', 'templates')
+    vercel_static_dir = os.path.join('/var/task', 'static')
+    local_template_dir = os.path.join(BASE_DIR, 'templates')
+    local_static_dir = os.path.join(BASE_DIR, 'static')
+    
+    # Use Vercel paths if they exist, otherwise fallback to local
+    template_dir = vercel_template_dir if os.path.isdir(vercel_template_dir) else local_template_dir
+    static_dir = vercel_static_dir if os.path.isdir(vercel_static_dir) else local_static_dir
     
     app = Flask(__name__, template_folder=template_dir, static_folder=static_dir)
     app.config.from_object(Config)
