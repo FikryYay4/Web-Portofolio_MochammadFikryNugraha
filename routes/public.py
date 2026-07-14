@@ -63,7 +63,7 @@ def login():
                 flash('Public login successful', 'success')
                 return redirect(url_for('public.home'))
         flash('Invalid credentials', 'error')
-    return render_template('public/login.html', role=role)
+    return render_template('pages/login.html', role=role)
 
 @public_bp.route('/logout')
 def logout():
