@@ -11,6 +11,7 @@
     }
   ],
   "env": {
-    "VERCEL": "1"
+    "VERCEL": "1",
+    "FLASK_DEBUG": "false"
   }
 }

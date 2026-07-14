@@ -10,6 +10,7 @@ from models import db
 
 def create_app():
     import os
+    import sys
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
     
     # Vercel: files at /var/task/ (project root)
@@ -24,15 +25,18 @@ def create_app():
         static_dir = os.path.join(BASE_DIR, 'static')
 
     # Debug: print resolved paths (visible in Vercel function logs)
-    print(f"[VERCEL DEBUG] is_vercel={is_vercel}")
-    print(f"[VERCEL DEBUG] template_dir={template_dir} exists={os.path.isdir(template_dir)}")
-    print(f"[VERCEL DEBUG] static_dir={static_dir} exists={os.path.isdir(static_dir)}")
-    print(f"[VERCEL DEBUG] BASE_DIR={BASE_DIR}")
-    print(f"[VERCEL DEBUG] cwd={os.getcwd()}")
+    print(f"[VERCEL DEBUG] is_vercel={is_vercel}", flush=True)
+    print(f"[VERCEL DEBUG] template_dir={template_dir} exists={os.path.isdir(template_dir)}", flush=True)
+    print(f"[VERCEL DEBUG] static_dir={static_dir} exists={os.path.isdir(static_dir)}", flush=True)
+    print(f"[VERCEL DEBUG] BASE_DIR={BASE_DIR}", flush=True)
+    print(f"[VERCEL DEBUG] cwd={os.getcwd()}", flush=True)
+    print(f"[VERCEL DEBUG] VERCEL env={os.environ.get('VERCEL')}", flush=True)
     if os.path.isdir('/var/task'):
-        print(f"[VERCEL DEBUG] /var/task contents: {os.listdir('/var/task')}")
+        print(f"[VERCEL DEBUG] /var/task contents: {os.listdir('/var/task')}", flush=True)
     if os.path.isdir('/var/task/templates'):
-        print(f"[VERCEL DEBUG] /var/task/templates contents: {os.listdir('/var/task/templates')}")
+        print(f"[VERCEL DEBUG] /var/task/templates contents: {os.listdir('/var/task/templates')}", flush=True)
+    else:
+        print(f"[VERCEL DEBUG] /var/task/templates NOT FOUND", flush=True)
 
     app = Flask(__name__, template_folder=template_dir, static_folder=static_dir)
     app.config.from_object(Config)
