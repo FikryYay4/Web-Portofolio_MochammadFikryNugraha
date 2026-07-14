@@ -1,5 +1,7 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for, session, current_app
 from models import db, Profile, Skill, Project, Message
+from models.hidden_certificate import HiddenCertificate
+from models.hidden_project import HiddenProject
 from utils.validators import validate_contact
 from utils.csrf import csrf_required
 from services.auth_service import login_required
@@ -10,10 +12,10 @@ public_bp = Blueprint('public', __name__)
 @login_required
 def home():
     import os
-    from models.hidden_certificate import HiddenCertificate
     profile = Profile.query.first()
     skills = Skill.query.order_by(Skill.order, Skill.id).all()
-    projects = Project.query.filter_by(is_hidden=False).order_by(Project.order, Project.id.desc()).all()
+    hidden_project_ids = {h.project_id for h in HiddenProject.query.all()}
+    projects = Project.query.filter(Project.id.notin_(hidden_project_ids)).order_by(Project.order, Project.id.desc()).all()
     hidden_cert_filenames = {h.filename for h in HiddenCertificate.query.all()}
     seen = set()
     cert_files = []
@@ -26,7 +28,7 @@ def home():
                     seen.add(f)
                     if f not in hidden_cert_filenames:
                         cert_files.append(f)
-    project_count = Project.query.filter_by(is_hidden=False).count()
+    project_count = Project.query.filter(Project.id.notin_(hidden_project_ids)).count()
     skill_count = Skill.query.count()
     return render_template('pages/home.html', profile=profile, skills=skills,
                            projects=projects, project_count=project_count,

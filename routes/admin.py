@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session, flash, jsonify
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
-from models import db, Profile, Skill, Project, ProjectImage, Message
+from models import db, Profile, Skill, Project, ProjectImage, Message, HiddenProject
 from services.auth_service import check_login, admin_required
 from services.upload_service import save_file, delete_file, save_project_image, delete_project_image
 from services.project_service import (
@@ -101,7 +101,8 @@ def profile():
 @admin_required
 def projects_list():
     projects = get_all_projects()
-    return render_template('dashboard/projects.html', projects=projects)
+    hidden_ids = {h.project_id for h in HiddenProject.query.all()}
+    return render_template('dashboard/projects.html', projects=projects, hidden_ids=hidden_ids)
 
 
 @admin_bp.route('/projects/create', methods=['GET', 'POST'])
@@ -226,9 +227,14 @@ def project_delete(project_id):
 @csrf_required
 def project_toggle_hidden(project_id):
     project = get_project(project_id)
-    project.is_hidden = not project.is_hidden
+    entry = HiddenProject.query.get(project_id)
+    if entry:
+        db.session.delete(entry)
+        flash('Project visible.', 'success')
+    else:
+        db.session.add(HiddenProject(project_id=project_id))
+        flash('Project hidden.', 'success')
     db.session.commit()
-    flash(f"Project {'hidden' if project.is_hidden else 'visible'}.", 'success')
     return redirect(url_for('admin.projects_list'))
 
 

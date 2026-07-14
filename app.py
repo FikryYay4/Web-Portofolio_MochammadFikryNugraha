@@ -87,16 +87,6 @@ def create_app():
     with app.app_context():
         db.create_all()
         try:
-            from sqlalchemy import inspect
-            inspector = inspect(db.engine)
-            cols = [c['name'] for c in inspector.get_columns('projects')]
-            if 'is_hidden' not in cols:
-                db.session.execute('ALTER TABLE projects ADD COLUMN is_hidden BOOLEAN DEFAULT FALSE')
-                db.session.commit()
-                print('[MIGRATE] Added is_hidden to projects', flush=True)
-        except Exception as e:
-            print(f'[MIGRATE] is_hidden column check failed: {e}', flush=True)
-        try:
             seed_data()
         except Exception as e:
             print(f'[WARN] seed_data failed: {e}', flush=True)
