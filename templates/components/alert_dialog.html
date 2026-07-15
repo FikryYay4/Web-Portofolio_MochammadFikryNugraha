@@ -77,14 +77,36 @@ window.alertDialog = {
 
 // Handle flash message alert dialogs on page load
 document.addEventListener('DOMContentLoaded', function() {
-    const flashMessages = document.querySelectorAll('[data-flash-error]');
-    flashMessages.forEach(msg => {
-        if (msg.dataset.flashError.includes('Invalid credentials')) {
-            window.alertDialog.open('Invalid Credentials', msg.dataset.flashError, {
+    // Check for any flash messages
+    const flashElements = document.querySelectorAll('[data-flash-error], [data-flash-success], [data-flash-warning], [data-flash-info]');
+    flashElements.forEach(el => {
+        const category = Object.keys(el.dataset).find(k => k.startsWith('flash-')).replace('flash-', '');
+        const message = el.dataset[Object.keys(el.dataset).find(k => k.startsWith('flash-'))];
+        
+        if (category === 'error') {
+            window.alertDialog.open('Error', message, {
                 showCancel: false,
-                actionText: 'Try Again'
+                actionText: 'OK'
+            });
+        } else if (category === 'success') {
+            window.alertDialog.open('Success', message, {
+                showCancel: false,
+                actionText: 'OK'
+            });
+        } else if (category === 'warning') {
+            window.alertDialog.open('Warning', message, {
+                showCancel: false,
+                actionText: 'OK'
+            });
+        } else if (category === 'info') {
+            window.alertDialog.open('Info', message, {
+                showCancel: false,
+                actionText: 'OK'
             });
         }
+        
+        // Remove the flash element after processing
+        el.remove();
     });
 });
 </script>
