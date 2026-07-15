@@ -46,7 +46,14 @@
 document.addEventListener('DOMContentLoaded', function() {
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get('deleted') === '1') {
-        alert('Message deleted!');
+        if (window.alertDialog) {
+            window.alertDialog.open('Message Deleted', 'Message deleted!', {
+                showCancel: false,
+                actionText: 'OK'
+            });
+        } else {
+            alert('Message deleted!');
+        }
         // Clean up URL
         window.history.replaceState({}, document.title, window.location.pathname);
     }

@@ -1,0 +1,90 @@
+<div id="alertDialog" class="alert-dialog-overlay" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="alertDialogTitle" aria-describedby="alertDialogDescription">
+    <div class="alert-dialog-content glass-card">
+        <div class="alert-dialog-header">
+            <h2 id="alertDialogTitle" class="alert-dialog-title"></h2>
+            <button type="button" class="alert-dialog-close" aria-label="Close">&times;</button>
+        </div>
+        <div class="alert-dialog-body">
+            <p id="alertDialogDescription" class="alert-dialog-description"></p>
+        </div>
+        <div class="alert-dialog-footer">
+            <button type="button" class="btn btn--ghost alert-dialog-cancel">Cancel</button>
+            <button type="button" class="btn btn--primary alert-dialog-action">Continue</button>
+        </div>
+    </div>
+</div>
+
+<script>
+window.alertDialog = {
+    open: function(title, description, options = {}) {
+        const overlay = document.getElementById('alertDialog');
+        const titleEl = document.getElementById('alertDialogTitle');
+        const descEl = document.getElementById('alertDialogDescription');
+        const cancelBtn = overlay.querySelector('.alert-dialog-cancel');
+        const actionBtn = overlay.querySelector('.alert-dialog-action');
+        const footer = overlay.querySelector('.alert-dialog-footer');
+        
+        titleEl.textContent = title;
+        descEl.textContent = description;
+        
+        const showCancel = options.showCancel !== false;
+        const actionText = options.actionText || 'Continue';
+        const cancelText = options.cancelText || 'Cancel';
+        const onAction = options.onAction || (() => {});
+        const onCancel = options.onCancel || (() => {});
+        
+        cancelBtn.textContent = cancelText;
+        actionBtn.textContent = actionText;
+        
+        cancelBtn.style.display = showCancel ? 'inline-flex' : 'none';
+        
+        const closeDialog = (result) => {
+            overlay.classList.remove('show');
+            setTimeout(() => {
+                overlay.setAttribute('aria-hidden', 'true');
+            }, 300);
+            if (result === 'action') onAction();
+            if (result === 'cancel') onCancel();
+        };
+        
+        overlay.setAttribute('aria-hidden', 'false');
+        requestAnimationFrame(() => {
+            overlay.classList.add('show');
+        });
+        
+        // Remove old listeners
+        cancelBtn.onclick = null;
+        actionBtn.onclick = null;
+        overlay.onclick = null;
+        
+        // New listeners
+        cancelBtn.onclick = () => closeDialog('cancel');
+        actionBtn.onclick = () => closeDialog('action');
+        overlay.onclick = (e) => {
+            if (e.target === overlay) closeDialog('cancel');
+        };
+        
+        // ESC key handler
+        const escHandler = (e) => {
+            if (e.key === 'Escape') {
+                closeDialog('cancel');
+                document.removeEventListener('keydown', escHandler);
+            }
+        };
+        document.addEventListener('keydown', escHandler);
+    }
+};
+
+// Handle flash message alert dialogs on page load
+document.addEventListener('DOMContentLoaded', function() {
+    const flashMessages = document.querySelectorAll('[data-flash-error]');
+    flashMessages.forEach(msg => {
+        if (msg.dataset.flashError.includes('Invalid credentials')) {
+            window.alertDialog.open('Invalid Credentials', msg.dataset.flashError, {
+                showCancel: false,
+                actionText: 'Try Again'
+            });
+        }
+    });
+});
+</script>
