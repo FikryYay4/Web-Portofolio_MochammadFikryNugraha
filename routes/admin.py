@@ -305,6 +305,14 @@ def skill_edit(skill_id):
         skill.certificates = request.form.get('certificates', skill.certificates)
         skill.year_started = request.form.get('year_started', type=int)
         skill.order = request.form.get('order', 0, type=int)
+
+        # Handle logo upload
+        logo_file = request.files.get('logo')
+        if logo_file and logo_file.filename:
+            logo_name = save_file(logo_file)
+            if logo_name:
+                skill.icon = logo_name
+
         db.session.commit()
         flash('Skill updated!', 'success')
         return redirect(url_for('admin.skills_list'))

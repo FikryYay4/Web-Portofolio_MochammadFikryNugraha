@@ -132,10 +132,10 @@ def seed_data():
               description='Pengeditan video profesional dan motion graphics.',
               software='Adobe Premiere Pro, Adobe After Effects',
               certificates='Sertifikat Video Editing & Motion Graphics', order=4),
-        Skill(name='Network Engineering', icon='programming/DeviconAndroidstudio.svg',
-              description='Desain, konfigurasi, dan troubleshooting infrastruktur jaringan.',
-              software='Cisco Packet Tracer, Mikrotik RouterOS',
-              certificates='BNSP Network Engineering', order=5),
+        Skill(name='Network Engineering', icon='network-engineering/cisco_logo_logoquake.svg',
+                      description='Desain, konfigurasi, dan troubleshooting infrastruktur jaringan.',
+                      software='Cisco Packet Tracer, Mikrotik RouterOS',
+                      certificates='BNSP Network Engineering', order=5),
     ]
     db.session.add_all(skills)
 
