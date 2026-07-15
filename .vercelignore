@@ -14,7 +14,6 @@ instance/
 .idea/
 *.log
 .DS_Store
-vercel.json
 railway.json
 Dockerfile
 seed_railway.py

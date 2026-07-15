@@ -9,7 +9,6 @@ from services.auth_service import login_required
 public_bp = Blueprint('public', __name__)
 
 @public_bp.route('/')
-@login_required
 def home():
     import os
     profile = Profile.query.first()
