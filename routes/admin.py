@@ -427,10 +427,13 @@ def certificates_delete():
         try:
             os.remove(fpath)
             flash('Certificate deleted!', 'success')
-        except OSError:
-            flash('Could not delete file (read-only?).', 'error')
+        except OSError as e:
+            if 'read-only' in str(e).lower() or e.errno == 30:
+                flash('Cannot delete: file system is read-only (Vercel). Hide it instead.', 'error')
+            else:
+                flash(f'Could not delete file: {e}', 'error')
     else:
-        flash('Bundled file cannot be deleted from here.', 'error')
+        flash('Bundled file cannot be deleted from here. Use "Hide" to remove from display.', 'error')
     return redirect(url_for('admin.certificates_list'))
 
 

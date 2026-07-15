@@ -13,37 +13,39 @@
         </div>
     </div>
     {% if skill is not none %}
-<div class="glass-card" style="padding:16px; margin-bottom:16px;">
-    <h3>Edit Skill: {{ skill.name }}</h3>
-    <form action="{{ url_for('admin.skill_edit', skill_id=skill.id) }}" method="POST" enctype="multipart/form-data">
-        <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}" />
-        <div style="margin:8px 0;"><label>Name:</label><input type="text" name="name" value="{{ skill.name }}" required></div>
-        <div style="margin:8px 0;"><label>Logo (file):</label><input type="file" name="logo" accept="image/*"></div>
-        <div style="margin:8px 0;"><label>Current Icon Path:</label><code>{{ skill.icon }}</code></div>
-        <div style="margin:8px 0;"><label>Description:</label><textarea name="description">{{ skill.description }}</textarea></div>
-        <div style="margin:8px 0;"><label>Software (comma separated):</label><input type="text" name="software" value="{{ skill.software }}"></div>
-        <div style="margin:8px 0;"><label>Certificates:</label><input type="text" name="certificates" value="{{ skill.certificates }}"></div>
-        <div style="margin:8px 0;"><label>Year Started:</label><input type="number" name="year_started" value="{{ skill.year_started }}"></div>
-        <div style="margin:8px 0;"><label>Order:</label><input type="number" name="order" value="{{ skill.order }}"></div>
-        <button type="submit" class="btn btn--primary">Save Changes</button>
-        <a href="{{ url_for('admin.skills_list') }}" class="btn btn--ghost" style="margin-left:8px;">Cancel</a>
-    </form>
-</div>
-{% endif %}
-
-{% if skill is none %}
-    <form action="{{ url_for('admin.skill_create') }}" method="POST" enctype="multipart/form-data" class="glass-card" style="padding:16px; margin-top:12px;">
-        <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}" />
-        <div><label>Name:</label><input type="text" name="name" required></div>
-        <div><label>Logo (file):</label><input type="file" name="logo"></div>
-        <div><label>Description:</label><textarea name="description"></textarea></div>
-        <div><label>Software (comma separated):</label><input type="text" name="software"></div>
-        <div><label>Certificates:</label><input type="text" name="certificates"></div>
-        <div><label>Year Started:</label><input type="number" name="year_started"></div>
-        <div><label>Order:</label><input type="number" name="order" value="0"></div>
-        <button type="submit" class="btn btn--primary" style="margin-top:8px;">Create Skill</button>
-    </form>
+    <div class="glass-card" style="padding:16px; margin-bottom:16px;">
+        <h3>Edit Skill: {{ skill.name }}</h3>
+        <form action="{{ url_for('admin.skill_edit', skill_id=skill.id) }}" method="POST" enctype="multipart/form-data">
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}" />
+            <div style="margin:8px 0;"><label>Name:</label><input type="text" name="name" value="{{ skill.name }}" required></div>
+            <div style="margin:8px 0;"><label>Icon Path:</label><input type="text" name="icon" value="{{ skill.icon }}" placeholder="e.g. network-engineering/cisco_logo_logoquake.svg"></div>
+            <div style="margin:8px 0;"><label>Logo (file):</label><input type="file" name="logo" accept="image/*"></div>
+            <div style="margin:8px 0;"><label>Current Icon Path:</label><code>{{ skill.icon }}</code></div>
+            <div style="margin:8px 0;"><label>Description:</label><textarea name="description">{{ skill.description }}</textarea></div>
+            <div style="margin:8px 0;"><label>Software (comma separated):</label><input type="text" name="software" value="{{ skill.software }}"></div>
+            <div style="margin:8px 0;"><label>Certificates:</label><input type="text" name="certificates" value="{{ skill.certificates }}"></div>
+            <div style="margin:8px 0;"><label>Year Started:</label><input type="number" name="year_started" value="{{ skill.year_started }}"></div>
+            <div style="margin:8px 0;"><label>Order:</label><input type="number" name="order" value="{{ skill.order }}"></div>
+            <button type="submit" class="btn btn--primary">Save Changes</button>
+            <a href="{{ url_for('admin.skills_list') }}" class="btn btn--ghost" style="margin-left:8px;">Cancel</a>
+        </form>
+    </div>
     {% endif %}
+
+    {% if skill is none %}
+        <form action="{{ url_for('admin.skill_create') }}" method="POST" enctype="multipart/form-data" class="glass-card" style="padding:16px; margin-top:12px;">
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}" />
+            <div><label>Name:</label><input type="text" name="name" required></div>
+            <div><label>Icon Path:</label><input type="text" name="icon" placeholder="e.g. network-engineering/cisco_logo_logoquake.svg"></div>
+            <div><label>Logo (file):</label><input type="file" name="logo"></div>
+            <div><label>Description:</label><textarea name="description"></textarea></div>
+            <div><label>Software (comma separated):</label><input type="text" name="software"></div>
+            <div><label>Certificates:</label><input type="text" name="certificates"></div>
+            <div><label>Year Started:</label><input type="number" name="year_started"></div>
+            <div><label>Order:</label><input type="number" name="order" value="0"></div>
+            <button type="submit" class="btn btn--primary" style="margin-top:8px;">Create Skill</button>
+        </form>
+        {% endif %}
 
     {% if skills %}
     <div class="dashboard__table-wrapper">
