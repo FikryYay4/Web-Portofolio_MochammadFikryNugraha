@@ -1,10 +1,3 @@
-# Memory — Web-Portofolio
-
-Proyek: `C:\Users\Administrator\Documents\Web-Portofolio`
-Stack: Flask + SQLAlchemy + Vercel deployment
-
----
-
 ## Perubahan & Perbaikan (Final)
 
 ### 1. `app.py` — Fix static route fallback (Vercel path mismatch)
@@ -147,12 +140,51 @@ Tidak diubah. Label untuk `IMG_20250604_0001_page-0001.jpg` dan `IMG_20250604_00
 
 ---
 
-## Ringkasan File Diubah
+### 5. UI/UX Improvements (Latest)
+
+#### a. Navbar Login/Logout Logic (`templates/layouts/navbar.html`)
+- **Guest**: Shows "Login" button (primary style)
+- **Public login**: Shows "Admin" link + "Logout"
+- **Admin login**: Shows "Dashboard" link + "Logout"
+- Fixed: Logout button now appears correctly after any login
+
+#### b. Flash Messages + Alert Dialog (`templates/base.html`, `templates/components/alert_dialog.html`)
+- Added global flash message container in `base.html` (fixed top-right, slide-in animation)
+- Updated `alert_dialog.html` to handle all flash categories (error, success, warning, info)
+- Login page (`templates/pages/login.html`) now includes flash message elements for alert dialog
+- All CRUD operations (skills, certificates, messages) show animated toast notifications
+
+#### c. Network Engineering Logo Fix
+- **Problem**: Skill "Network Engineering" used wrong icon (`programming/DeviconAndroidstudio.svg`)
+- **Fix**: Updated `app.py` seed_data + database record to use `network-engineering/cisco_logo_logoquake.svg`
+- **Vercel Static Routing**: Added `/static/(.*)` rewrite in `vercel.json` for SVG assets
+- **Files**: `app.py` (seed), `vercel.json` (rewrite), database updated
+
+#### d. Skills CRUD Enhancements (`templates/dashboard/skills.html`)
+- Added **Icon Path** input field (text) to both Create and Edit forms
+- User can now specify icon path manually OR upload logo file
+- Example: `network-engineering/cisco_logo_logoquake.svg`
+
+#### e. Certificates UX (`routes/admin.py`)
+- **Toggle Hide/Show**: Works perfectly with flash confirmation
+- **Delete**: Shows helpful error "Cannot delete: file system is read-only (Vercel). Hide it instead." instead of generic OSError
+
+#### f. Gmail Mailto Links (`templates/sections/contact.html`, `templates/layouts/footer.html`)
+- Pre-filled subject: `"Collab / I'd like to invite you to join my company."`
+- Pre-filled body: Full bilingual template (English + Indonesian) with proper URL encoding
+- Clicking Gmail icon opens email client with ready-to-send message
+
+#### g. Flowing Logos Animation (`templates/sections/flowing_logos.html`)
+- Added Cisco logo (`cisco_logo_logoquake.svg`) to the infinite marquee scroll
+
+---
+
+### 6. Ringkasan File Diubah (Total)
 
 | File | Tipe Perubahan |
 |------|---------------|
-| `app.py` | Edit (static route + hapus migration) |
-| `routes/admin.py` | Edit (delete route + 2 toggle routes + list queries) |
+| `app.py` | Edit (static route + hapus migration + seed icon fix) |
+| `routes/admin.py` | Edit (delete route + 2 toggle routes + list queries + cert delete error msg) |
 | `routes/public.py` | Edit (filter hidden projects + certificates) |
 | `models/project.py` | Edit (hapus `is_hidden` kolom) |
 | `models/__init__.py` | Edit (import HiddenCertificate + HiddenProject) |
@@ -160,13 +192,65 @@ Tidak diubah. Label untuk `IMG_20250604_0001_page-0001.jpg` dan `IMG_20250604_00
 | `models/hidden_project.py` | **Baru** |
 | `templates/dashboard/projects.html` | Edit (status badge + toggle button) |
 | `templates/dashboard/certificates.html` | Edit (status badge + toggle button) |
+| `templates/layouts/navbar.html` | Edit (Login/Logout logic) |
+| `templates/base.html` | Edit (flash message container) |
+| `templates/components/alert_dialog.html` | Edit (all flash categories) |
+| `templates/pages/login.html` | Edit (flash elements) |
+| `templates/dashboard/skills.html` | Edit (Icon Path input) |
+| `templates/sections/contact.html` | Edit (Gmail mailto subject+body) |
+| `templates/layouts/footer.html` | Edit (Gmail mailto subject+body) |
+| `templates/sections/flowing_logos.html` | Edit (add Cisco logo) |
+| `vercel.json` | Edit (static file rewrite) |
 
-Total: 9 file (2 baru, 7 edit).
+**Total: 19 file (2 baru, 17 edit)**
 
 ---
 
-## Deploy History
+### Deploy History
 
 1. **Commit `34f8452`** — Initial fixes: static route, cert delete, is_hidden column, HiddenCertificate, toggle routes, migration
 2. **Commit `bfa0a61`** — Fix: ganti `is_hidden` kolom dengan `HiddenProject` table (PostgreSQL ALTER TABLE fix)
-3. **Redeploy Vercel** — Production: `https://web-portofolio-mochammad-fikry-nugr.vercel.app` (READY)
+3. **Commit `66c18e4`** — Fix: Gmail mailto with subject + Cisco logo in flowing logos
+4. **Commit `6eabbd1`** — Fix: Gmail mailto with full subject + body template in footer & contact
+5. **Redeploy Vercel** — Production: `https://web-portofolio-mochammad-fikry-nugr.vercel.app` (READY)
+
+---
+
+### Quick Verification Commands
+
+```bash
+# Check live deployment
+curl -s https://web-portofolio-mochammad-fikry-nugr.vercel.app/ | grep -c "cisco_logo_logoquake.svg"
+# Should return > 0
+
+# Check mailto link
+curl -s https://web-portofolio-mochammad-fikry-nugr.vercel.app/ | grep -o 'mailto:[^"]*' | head -1
+# Should show full subject+body encoded URL
+
+# Check admin login
+# admin / admin123
+# public / Public123
+```
+
+---
+
+### Environment Variables (Vercel)
+
+| Variable | Value | Scope |
+|----------|-------|-------|
+| `ADMIN_USERNAME` | `admin` | Production, Preview |
+| `ADMIN_PASSWORD` | `admin123` | Production, Preview |
+| `PUBLIC_USERNAME` | `public` | Production, Preview |
+| `PUBLIC_PASSWORD` | `Public123` | Production, Preview |
+| `SECRET_KEY` | (auto-generated) | Production, Preview |
+| `SESSION_SECURE` | `true` | Production |
+| `DATABASE_URL` | (PostgreSQL/Neon) | Production, Preview |
+
+---
+
+### Known Limitations
+
+1. **Vercel read-only filesystem** — Cannot delete certificate files from `/var/task/static/`. Use "Hide" instead.
+2. **Mailto length** — Body template is ~1500 chars. Some email clients may truncate. Test on target clients.
+3. **SQLite on Vercel** — Uses `/tmp/portfolio.db` (ephemeral). For persistence, use PostgreSQL (Neon/Supabase) via `DATABASE_URL`.
+4. **No rate limit storage** — Uses in-memory `memory://`. Resets on cold start. For production, add Redis via `RATELIMIT_STORAGE_URI`.

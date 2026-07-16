@@ -454,4 +454,5 @@ def message_delete(message_id):
     msg = Message.query.get_or_404(message_id)
     db.session.delete(msg)
     db.session.commit()
+    flash('Message deleted!', 'success')
     return redirect(url_for('admin.messages_list') + '?deleted=1')

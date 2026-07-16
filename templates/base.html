@@ -12,28 +12,8 @@
     {% include 'layouts/navbar.html' %}
 
     <main>
-        <!-- Flash messages -->
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-            <div id="flash-messages" class="flash-container" style="position:fixed;top:80px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:8px;max-width:400px;">
-                {% for category, message in messages %}
-                <div class="flash-message flash-{{ category }} glass-card" style="padding:16px 20px;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,0.3);animation:slideIn 0.3s ease;{% if category == 'error' %}border-left:4px solid #ff4444;{% elif category == 'success' %}border-left:4px solid #44ff44;{% elif category == 'warning' %}border-left:4px solid #ffaa00;{% else %}border-left:4px solid #4488ff;{% endif %}">
-                    <div style="display:flex;align-items:center;gap:12px;">
-                        <span style="flex:1;font-weight:500;">{{ message }}</span>
-                        <button onclick="this.parentElement.parentElement.remove()" style="background:none;border:none;color:inherit;font-size:1.2rem;cursor:pointer;padding:0;line-height:1;">&times;</button>
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
-            <style>
-                @keyframes slideIn { from { opacity:0; transform:translateX(100%); } to { opacity:1; transform:translateX(0); } }
-                .flash-message { opacity:1; transition:opacity 0.3s ease; }
-            </style>
-            {% endif %}
-        {% endwith %}
-        
-        {% block content %}{% endblock %}
-    </main>
+            {% block content %}{% endblock %}
+        </main>
 
     {% include 'layouts/footer.html' %}
 
