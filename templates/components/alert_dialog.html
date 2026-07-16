@@ -80,8 +80,12 @@ document.addEventListener('DOMContentLoaded', function() {
     // Check for any flash messages
     const flashElements = document.querySelectorAll('[data-flash-error], [data-flash-success], [data-flash-warning], [data-flash-info]');
     flashElements.forEach(el => {
-        const category = Object.keys(el.dataset).find(k => k.startsWith('flash-')).replace('flash-', '');
-        const message = el.dataset[Object.keys(el.dataset).find(k => k.startsWith('flash-'))];
+        // Browsers convert "data-flash-error" -> dataset.flashError (camelCase, no hyphen),
+        // so we look for keys starting with "flash" (no hyphen) instead of "flash-".
+        const key = Object.keys(el.dataset).find(k => k.startsWith('flash'));
+        if (!key) return;
+        const category = key.slice(5).toLowerCase(); // "flashError" -> "error"
+        const message = el.dataset[key];
         
         if (category === 'error') {
             window.alertDialog.open('Error', message, {
