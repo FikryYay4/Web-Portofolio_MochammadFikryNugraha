@@ -9,9 +9,10 @@ client = app.test_client()
 def set_csrf(sess, token='testtoken'):
     sess['_csrf_token'] = token
 
-# 1 Home page - should be accessible without authentication (public portfolio)
+# 1 Home page - should redirect to login when not authenticated
 resp = client.get('/')
-assert resp.status_code == 200, 'Home page should be accessible without authentication'
+assert resp.status_code == 302, 'Home page should redirect to login when not authenticated'
+assert '/login' in resp.headers.get('Location', ''), 'Should redirect to login'
 
 # 2 Unauthenticated admin dashboard should redirect (302)
 assert client.get('/admin/').status_code == 302, 'Unauthenticated admin should redirect'
