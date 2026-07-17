@@ -11,11 +11,11 @@ from models import db
 
 def create_app():
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-    
+
     # Vercel: files at /var/task/ (project root)
     # Local dev: templates/, static/ at project root
     is_vercel = os.environ.get('VERCEL') == '1'
-    
+
     if is_vercel:
         template_dir = os.path.join('/var/task', 'templates')
         static_dir = os.path.join('/var/task', 'static')
@@ -41,11 +41,8 @@ def create_app():
     app.config.from_object(Config)
     app.config['STATIC_DIR'] = static_dir
 
-    @app.route('/static/<path:filename>', endpoint='static')
-    def static_from_anywhere(filename):
-        static_path = os.path.join(static_dir, filename)
-        if os.path.exists(static_path):
-            return send_from_directory(static_dir, filename)
+    @app.route('/static/uploads/<path:filename>', endpoint='static')
+    def static_uploads(filename):
         upload_dir = current_app.config['UPLOAD_FOLDER']
         path_components = filename.split('/')
         if path_components and path_components[0] == 'uploads':
