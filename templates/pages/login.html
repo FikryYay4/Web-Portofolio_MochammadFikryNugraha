@@ -4,24 +4,10 @@
 {% block content %}
 <div class="login-page">
     <div class="login-card glass-card">
-    <h2>{% if role == 'admin' %}Admin Login{% else %}Public Login{% endif %}</h2>
-    <div class="tabs">
-        <a href="{{ url_for('public.login', role='public') }}" class="tab{% if role != 'admin' %} active{% endif %}">Public</a>
-        <a href="{{ url_for('public.login', role='admin') }}" class="tab{% if role == 'admin' %} active{% endif %}">Admin</a>
-    </div>
-    
-    <!-- Flash messages for alert dialog -->
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            {% for category, message in messages %}
-            <div data-flash-{{ category }}="{{ message }}"></div>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
-    
-    <form action="{{ url_for('public.login', role=role) }}" method="POST">
+    <h2>Admin Login</h2>
+    <form action="{{ url_for('public.login', role='admin') }}" method="POST">
         <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
-        <input type="hidden" name="role" value="{{ role }}">
+        <input type="hidden" name="role" value="admin">
         <div class="form-group">
             <label for="username">Username</label>
             <input type="text" id="username" name="username" class="form-input" required>

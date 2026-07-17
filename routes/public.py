@@ -4,12 +4,9 @@ from models.hidden_certificate import HiddenCertificate
 from models.hidden_project import HiddenProject
 from utils.validators import validate_contact
 from utils.csrf import csrf_required
-from services.auth_service import login_required
 
 public_bp = Blueprint('public', __name__)
-
 @public_bp.route('/')
-@login_required
 def home():
     import os
     profile = Profile.query.first()
@@ -57,32 +54,21 @@ def contact():
 @public_bp.route('/login', methods=['GET', 'POST'])
 @csrf_required
 def login():
-    role = request.args.get('role', 'public')
+    # Hanya admin login yang didukung
     if request.method == 'POST':
-        # role may be submitted via hidden field
-        role = request.form.get('role') or role
         username = request.form.get('username', '')
         password = request.form.get('password', '')
 
-        if role == 'admin':
-            cfg_user = current_app.config.get('ADMIN_USERNAME')
-            cfg_pass = current_app.config.get('ADMIN_PASSWORD')
-            if username == cfg_user and password == cfg_pass:
-                session['admin_logged_in'] = True
-                flash('Admin login successful', 'success')
-                return redirect(url_for('admin.dashboard'))
-        else:
-            cfg_user = current_app.config.get('PUBLIC_USERNAME')
-            cfg_pass = current_app.config.get('PUBLIC_PASSWORD')
-            if username == cfg_user and password == cfg_pass:
-                session['public_logged_in'] = True
-                flash('Public login successful', 'success')
-                return redirect(url_for('public.home'))
+        cfg_user = current_app.config.get('ADMIN_USERNAME')
+        cfg_pass = current_app.config.get('ADMIN_PASSWORD')
+        if username == cfg_user and password == cfg_pass:
+            session['admin_logged_in'] = True
+            flash('Admin login successful', 'success')
+            return redirect(url_for('admin.dashboard'))
         flash('Invalid credentials', 'error')
-    return render_template('pages/login.html', role=role)
+    return render_template('pages/login.html')
 
 @public_bp.route('/logout')
 def logout():
-    session.pop('public_logged_in', None)
     session.pop('admin_logged_in', None)
     return redirect(url_for('public.home'))

@@ -13,20 +13,14 @@
             <li><a href="#projects" class="navbar__link" data-section="projects">Projects</a></li>
             <li><a href="#experience" class="navbar__link" data-section="experience">Experience</a></li>
             <li><a href="#contact" class="navbar__link" data-section="contact">Contact</a></li>
-        </ul>
-
         <div class="navbar__auth">
-                    {% if session.get('admin_logged_in') %}
-                        <a href="{{ url_for('admin.dashboard') }}" class="btn btn--ghost navbar__auth-btn">Dashboard</a>
-                    {% elif session.get('public_logged_in') %}
-                        <a href="{{ url_for('public.login', role='admin') }}" class="btn btn--ghost navbar__auth-btn">Admin</a>
-                    {% else %}
-                        <a href="{{ url_for('public.login') }}" class="btn btn--primary navbar__auth-btn">Login</a>
-                    {% endif %}
-                    {% if session.get('public_logged_in') or session.get('admin_logged_in') %}
-                        <a href="{{ url_for('public.logout') }}" class="btn btn--ghost navbar__auth-btn">Logout</a>
-                    {% endif %}
-                </div>
+                            {% if session.get('admin_logged_in') %}
+                                <a href="{{ url_for('admin.dashboard') }}" class="btn btn--ghost navbar__auth-btn">Dashboard</a>
+                                <a href="{{ url_for('admin.logout') }}" class="btn btn--ghost navbar__auth-btn">Logout</a>
+                            {% else %}
+                                <a href="{{ url_for('public.login') }}" class="btn btn--primary navbar__auth-btn">Admin Login</a>
+                            {% endif %}
+                        </div>
 
         <a href="#contact" class="btn btn--primary navbar__cta">Let's Connect</a>
 

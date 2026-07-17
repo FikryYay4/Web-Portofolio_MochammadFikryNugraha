@@ -48,6 +48,3 @@ class Config:
     DEBUG = os.environ.get('FLASK_DEBUG', 'false').lower() == 'true'
     # Max login attempts per minute
     LOGIN_RATE_LIMIT = '5 per minute'
-    # Public user credentials (optional)
-    PUBLIC_USERNAME = os.getenv('PUBLIC_USERNAME', 'public')
-    PUBLIC_PASSWORD = os.getenv('PUBLIC_PASSWORD', 'Public123')

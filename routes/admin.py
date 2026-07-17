@@ -15,28 +15,19 @@ from utils.csrf import csrf_required
 
 admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
 
-# Rate limiter for login endpoint - configured in app factory
+# Rate limiter untuk endpoint login - dikonfigurasi di app factory
 login_limiter = Limiter(key_func=get_remote_address, default_limits=[])
 
 
 @admin_bp.route('/login', methods=['GET'])
 def login_redirect():
-    """Redirect to the unified login page.
-    If the query parameter ``auto=1`` is present, automatically log in as admin
-    (useful for quick debugging or direct access links). This sets the
-    ``admin_logged_in`` session flag and forwards to the admin dashboard.
-    """
-    if request.args.get('auto') == '1':
-        session['admin_logged_in'] = True
-        return redirect(url_for('admin.dashboard'))
-    # Standard flow – unified login page; role will be indicated via query param
-    return redirect(url_for('public.login', role='admin'))
+    """Redirect ke halaman login terpadu."""
+    return redirect(url_for('public.login'))
 
 
 @admin_bp.route('/logout')
 def logout():
     session.pop('admin_logged_in', None)
-    session.pop('public_logged_in', None)
     session.pop('_csrf_token', None)
     return redirect(url_for('public.login'))
 
@@ -49,7 +40,8 @@ def dashboard():
     messages = Message.query.order_by(Message.created_at.desc()).all()
     profile = Profile.query.first()
     messages_count = len(messages)
-    # Count certificate files in both dirs
+    skills_count = len(skills)
+    # Hitung file sertifikat di kedua direktori
     import os
     from flask import current_app
     seen = set()
@@ -62,8 +54,9 @@ def dashboard():
     certificates_count = len(seen)
     return render_template('dashboard/index.html',
                            projects=projects, skills=skills,
-                          messages=messages, messages_count=messages_count,
-                          certificates_count=certificates_count, profile=profile)
+                           messages=messages, messages_count=messages_count,
+                           skills_count=skills_count,
+                           certificates_count=certificates_count, profile=profile)
 
 
 @admin_bp.route('/profile', methods=['GET', 'POST'])
@@ -92,7 +85,7 @@ def profile():
                 profile.photo = filename
 
         db.session.commit()
-        flash('Profile updated!', 'success')
+        flash('Profil diperbarui!', 'success')
         return redirect(url_for('admin.profile'))
     return render_template('dashboard/profile.html', profile=profile)
 
@@ -136,6 +129,8 @@ def project_create():
             filename = save_file(thumbnail)
             if filename:
                 data['thumbnail'] = filename
+            else:
+                flash('Tipe file tidak valid. Thumbnail tidak disimpan.', 'error')
 
         project = create_project(data)
 
@@ -146,7 +141,7 @@ def project_create():
                 if fname:
                     create_image(project.id, fname)
 
-        flash('Project created!', 'success')
+        flash('Proyek dibuat!', 'success')
         return redirect(url_for('admin.projects_list'))
     return render_template('dashboard/add_project.html', project=None)
 
@@ -185,6 +180,8 @@ def project_edit(project_id):
             filename = save_file(thumbnail)
             if filename:
                 data['thumbnail'] = filename
+            else:
+                flash('Tipe file tidak valid. Thumbnail tidak diubah.', 'error')
 
         update_project(project_id, data)
 
@@ -203,7 +200,7 @@ def project_edit(project_id):
                 if fname:
                     create_image(project_id, fname)
 
-        flash('Project updated!', 'success')
+        flash('Proyek diperbarui!', 'success')
         return redirect(url_for('admin.projects_list'))
     return render_template('dashboard/edit_project.html', project=project)
 
@@ -218,7 +215,7 @@ def project_delete(project_id):
     for img in project.images.all():
         delete_project_image(img.filename)
     delete_project(project_id)
-    flash('Project deleted!', 'success')
+    flash('Proyek dihapus!', 'success')
     return redirect(url_for('admin.projects_list'))
 
 
@@ -230,10 +227,10 @@ def project_toggle_hidden(project_id):
     entry = HiddenProject.query.get(project_id)
     if entry:
         db.session.delete(entry)
-        flash('Project visible.', 'success')
+        flash('Proyek ditampilkan.', 'success')
     else:
         db.session.add(HiddenProject(project_id=project_id))
-        flash('Project hidden.', 'success')
+        flash('Proyek disembunyikan.', 'success')
     db.session.commit()
     return redirect(url_for('admin.projects_list'))
 
@@ -244,12 +241,13 @@ def project_toggle_hidden(project_id):
 def project_image_delete(project_id, image_id):
     filename = delete_image(image_id)
     delete_project_image(filename)
-    flash('Image deleted!', 'success')
+    flash('Gambar dihapus!', 'success')
     return redirect(url_for('admin.project_edit', project_id=project_id))
 
 
 @admin_bp.route('/projects/<int:project_id>/images/reorder', methods=['POST'])
 @admin_required
+@csrf_required
 def project_images_reorder(project_id):
     data = request.get_json()
     if data and 'order' in data:
@@ -287,7 +285,7 @@ def skill_create():
                 skill.icon = logo_name
         db.session.add(skill)
         db.session.commit()
-        flash('Skill created!', 'success')
+        flash('Skill dibuat!', 'success')
         return redirect(url_for('admin.skills_list'))
     return render_template('dashboard/skills.html', skill=None)
 
@@ -314,7 +312,7 @@ def skill_edit(skill_id):
                 skill.icon = logo_name
 
         db.session.commit()
-        flash('Skill updated!', 'success')
+        flash('Skill diperbarui!', 'success')
         return redirect(url_for('admin.skills_list'))
     return render_template('dashboard/skills.html', skill=skill)
 
@@ -326,7 +324,7 @@ def skill_delete(skill_id):
     skill = Skill.query.get_or_404(skill_id)
     db.session.delete(skill)
     db.session.commit()
-    flash('Skill deleted!', 'success')
+    flash('Skill dihapus!', 'success')
     return redirect(url_for('admin.skills_list'))
 
 
@@ -343,7 +341,6 @@ def messages_list():
 def messages_count_api():
     count = Message.query.count()
     return jsonify({'count': count})
-
 
 
 @admin_bp.route('/certificates')
@@ -383,11 +380,11 @@ def certificates_upload():
         from services.upload_service import save_file
         fname = save_file(file, subfolder='certificates')
         if fname:
-            flash('Certificate uploaded!', 'success')
+            flash('Sertifikat diunggah!', 'success')
         else:
-            flash('Invalid file type.', 'error')
+            flash('Tipe file tidak valid.', 'error')
     else:
-        flash('No file selected.', 'error')
+        flash('Tidak ada file dipilih.', 'error')
     return redirect(url_for('admin.certificates_list'))
 
 
@@ -398,15 +395,15 @@ def certificates_toggle_hidden():
     from models.hidden_certificate import HiddenCertificate
     fname = request.form.get('filename', '')
     if not fname:
-        flash('No filename provided.', 'error')
+        flash('Nama file tidak diberikan.', 'error')
         return redirect(url_for('admin.certificates_list'))
     entry = HiddenCertificate.query.get(fname)
     if entry:
         db.session.delete(entry)
-        flash('Certificate visible.', 'success')
+        flash('Sertifikat ditampilkan.', 'success')
     else:
         db.session.add(HiddenCertificate(filename=fname))
-        flash('Certificate hidden.', 'success')
+        flash('Sertifikat disembunyikan.', 'success')
     db.session.commit()
     return redirect(url_for('admin.certificates_list'))
 
@@ -417,7 +414,7 @@ def certificates_toggle_hidden():
 def certificates_delete():
     fname = request.form.get('filename', '')
     if not fname:
-        flash('No filename provided.', 'error')
+        flash('Nama file tidak diberikan.', 'error')
         return redirect(url_for('admin.certificates_list'))
     import os
     from flask import current_app
@@ -426,14 +423,14 @@ def certificates_delete():
     if fpath.startswith(os.path.normpath(cert_dir)) and os.path.exists(fpath):
         try:
             os.remove(fpath)
-            flash('Certificate deleted!', 'success')
+            flash('Sertifikat dihapus!', 'success')
         except OSError as e:
             if 'read-only' in str(e).lower() or e.errno == 30:
-                flash('Cannot delete: file system is read-only (Vercel). Hide it instead.', 'error')
+                flash('Tidak dapat menghapus: sistem file read-only (Vercel). Sembunyikan saja.', 'error')
             else:
-                flash(f'Could not delete file: {e}', 'error')
+                flash(f'Gagal menghapus file: {e}', 'error')
     else:
-        flash('Bundled file cannot be deleted from here. Use "Hide" to remove from display.', 'error')
+        flash('File bawaan tidak bisa dihapus dari sini. Gunakan "Sembunyikan" untuk menghilangkan dari tampilan.', 'error')
     return redirect(url_for('admin.certificates_list'))
 
 

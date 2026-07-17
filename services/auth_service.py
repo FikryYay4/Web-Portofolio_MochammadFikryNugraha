@@ -3,6 +3,7 @@ from flask import session, redirect, url_for, current_app
 
 
 def check_login(username, password):
+    """Cek login admin dengan kredensial dari config."""
     cfg_username = current_app.config.get('ADMIN_USERNAME')
     cfg_password = current_app.config.get('ADMIN_PASSWORD')
     if not cfg_password:
@@ -14,7 +15,7 @@ def admin_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
         if not session.get('admin_logged_in'):
-            return redirect(url_for('public.login', role='admin'))
+            return redirect(url_for('public.login'))
         return f(*args, **kwargs)
     return decorated
 
@@ -22,9 +23,9 @@ def admin_required(f):
 def login_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
-        if not (session.get('admin_logged_in') or session.get('public_logged_in')):
+        if not session.get('admin_logged_in'):
             return redirect(url_for('public.login'))
         return f(*args, **kwargs)
     return decorated
 
-# existing login_required stays for public (checks 'public_logged_in')
+# login_required lama untuk public (cek 'public_logged_in') - tidak digunakan lagi

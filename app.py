@@ -102,11 +102,11 @@ def seed_data():
 
     profile = Profile(
         name='Mochammad Fikry Nugraha',
-        headline='Programmer | Data Analyst | Graphic Designer | Video Editor',
-        about='Seorang mahasiswa Teknik Informatika di Universitas Bale Bandung yang passionate di bidang pengembangan web, analisis data, desain grafis, dan editing video. Berbekal pengalaman dari SMK Telkom Bandung jurusan TJKT, kini terus mengembangkan diri di dunia teknologi informasi dengan semangat belajar dan berinovasi.',
+        headline='Network Engineer | Data Analyst | Graphic Designer | Video Editor | Programmer',
+        about='Seorang mahasiswa Teknik Informatika di Universitas Bale Bandung yang passionate di bidang jaringan, pemrograman dasar, analisis data, desain grafis, dan editing video. Berbekal pengalaman dari SMK Telkom Bandung jurusan TJKT, kini terus mengembangkan diri di dunia teknologi informasi dengan semangat belajar dan berinovasi.',
         photo='profile.png',
         email='nugrahafikry2@gmail.com',
-        phone='Belum Ditentukan',
+        phone='+62 882-8964-5823',
         location='Bandung, Indonesia',
         github_url='https://github.com/FikryYay4',
         linkedin_url='https://www.linkedin.com/in/mochammad-fikry-nugraha-75636338a',

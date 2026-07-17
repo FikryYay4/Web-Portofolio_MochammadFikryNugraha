@@ -86,29 +86,20 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!key) return;
         const category = key.slice(5).toLowerCase(); // "flashError" -> "error"
         const message = el.dataset[key];
-        
+
+        // Only show error messages and "Message deleted!" success messages
         if (category === 'error') {
             window.alertDialog.open('Error', message, {
                 showCancel: false,
                 actionText: 'OK'
             });
-        } else if (category === 'success') {
+        } else if (category === 'success' && message.includes('deleted')) {
             window.alertDialog.open('Success', message, {
                 showCancel: false,
                 actionText: 'OK'
             });
-        } else if (category === 'warning') {
-            window.alertDialog.open('Warning', message, {
-                showCancel: false,
-                actionText: 'OK'
-            });
-        } else if (category === 'info') {
-            window.alertDialog.open('Info', message, {
-                showCancel: false,
-                actionText: 'OK'
-            });
         }
-        
+
         // Remove the flash element after processing
         el.remove();
     });
