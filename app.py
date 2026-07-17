@@ -37,11 +37,11 @@ def create_app():
     else:
         print(f"[VERCEL DEBUG] /var/task/templates NOT FOUND", flush=True)
 
-    app = Flask(__name__, template_folder=template_dir, static_folder=None)
+    app = Flask(__name__, template_folder=template_dir, static_folder=static_dir)
     app.config.from_object(Config)
     app.config['STATIC_DIR'] = static_dir
 
-    @app.route('/static/uploads/<path:filename>', endpoint='static')
+    @app.route('/static/uploads/<path:filename>', endpoint='static_uploads')
     def static_uploads(filename):
         upload_dir = current_app.config['UPLOAD_FOLDER']
         path_components = filename.split('/')
