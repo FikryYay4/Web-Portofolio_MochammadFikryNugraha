@@ -1204,7 +1204,7 @@ a {
 .modal-title {
     font-size: 1.8rem;
     text-align: center;
-    margin-bottom: 15px;
+    margin-bottom: 15px.
 }
 
 .modal-body {
@@ -1228,6 +1228,124 @@ a {
 /* Admin dashboard header spacing */
 .dashboard__header { margin-bottom: 24px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; }
 .dashboard__header-actions { display:flex; align-items:center; gap:8px; }
+
+/* Dashboard page container  clears the fixed navbar (this is what was
+   making buttons at the top of the page unclickable: content started at
+   y=0 and rendered underneath the navbar's z-index:100 layer). */
+.dashboard {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 120px 20px 80px;
+}
+
+.dashboard__title {
+    font-size: 1.8rem;
+    color: var(--text);
+    margin-bottom: 8px;
+}
+
+.dashboard__section-title {
+    font-size: 1.1rem;
+    color: var(--text);
+    font-weight: 600;
+    margin-bottom: 16px;
+}
+
+.dashboard__section { margin-bottom: 40px; }
+
+/* Stat cards */
+.dashboard__stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 40px;
+}
+
+.stat-card {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.stat-card__icon {
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.stat-card__icon--primary   { background: rgba(59, 130, 246, 0.15); color: var(--primary); }
+.stat-card__icon--accent    { background: rgba(6, 182, 212, 0.15);  color: var(--secondary); }
+.stat-card__icon--secondary { background: rgba(139, 92, 246, 0.15); color: var(--accent); }
+.stat-card__icon--info      { background: rgba(59, 130, 246, 0.15); color: var(--primary); }
+.stat-card__icon--success   { background: rgba(34, 197, 94, 0.15);  color: var(--success); }
+
+.stat-card__info { display: flex; flex-direction: column; gap: 2px; }
+.stat-card__num { font-size: 2rem; font-weight: 700; color: var(--text); line-height: 1.1; }
+.stat-card__label { font-size: 0.85rem; color: var(--text-secondary); }
+
+.stat-card__link {
+    align-self: flex-start;
+    margin-top: auto;
+    font-size: 0.8rem;
+    color: var(--secondary);
+}
+.stat-card__link:hover { text-decoration: underline; }
+
+/* Quick actions */
+.dashboard__quick-actions { margin-bottom: 40px; }
+.dashboard__actions { display: flex; flex-wrap: wrap; gap: 12px; }
+
+/* Tables (projects / skills / messages / certificates lists) */
+.dashboard__table-wrapper {
+    overflow-x: auto;
+    border-radius: var(--radius-card);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: var(--surface);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+.dashboard__table { width: 100%; border-collapse: collapse; }
+
+.dashboard__table th, .dashboard__table td {
+    text-align: left;
+    padding: 14px 16px;
+    font-size: 0.9rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    white-space: nowrap;
+}
+
+.dashboard__table th {
+    color: var(--text-secondary);
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.dashboard__table td { color: var(--text); }
+.dashboard__table tr:last-child td { border-bottom: none; }
+
+.dashboard__actions-cell { display: flex; gap: 8px; align-items: center; }
+.inline-form { display: inline-flex; }
+
+.dashboard__empty {
+    padding: 48px 24px;
+    text-align: center;
+    color: var(--text-secondary);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+}
+
+@media (max-width: 640px) {
+    .dashboard { padding: 100px 16px 60px; }
+}
 
 .animated-tabs {
     width: 100%;
@@ -1684,7 +1802,7 @@ a {
     max-height: 90vh;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: center.
 }
 .cert-modal-container .modal-close {
     position: absolute;
@@ -1695,14 +1813,14 @@ a {
     background: none;
     border: none;
     cursor: pointer;
-    z-index: 10;
+    z-index: 10.
 }
 .cert-modal-img {
     max-width: 90vw;
     max-height: 85vh;
     object-fit: contain;
     border-radius: 12px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5).
 }
 
 /* Layer Stack for Project Images */
@@ -1713,7 +1831,7 @@ a {
     overflow: hidden;
     background: rgba(0, 0, 0, 0.2);
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    cursor: pointer;
+    cursor: pointer.
 }
 
 .project-card__stack-item {
@@ -1726,85 +1844,85 @@ a {
     border-radius: var(--radius-card) var(--radius-card) 0 0;
     opacity: 0;
     transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
-    pointer-events: none;
+    pointer-events: none.
 }
 
 .project-card__stack-item--active {
     opacity: 1;
-    position: relative;
+    position: relative.
 }
 
 .project-card__stack-item:nth-child(2) {
     transform: rotate(1.5deg) translateY(4px) translateX(3px);
     opacity: 0.85;
-    z-index: 4;
+    z-index: 4.
 }
 
 .project-card__stack-item:nth-child(3) {
     transform: rotate(-1deg) translateY(8px) translateX(-2px);
     opacity: 0.7;
-    z-index: 3;
+    z-index: 3.
 }
 
 .project-card__stack-item:nth-child(4) {
     transform: rotate(2deg) translateY(12px) translateX(4px);
     opacity: 0.55;
-    z-index: 2;
+    z-index: 2.
 }
 
 .project-card__stack-item:nth-child(5) {
     transform: rotate(-1.5deg) translateY(16px) translateX(-3px);
     opacity: 0.4;
-    z-index: 1;
+    z-index: 1.
 }
 
 .project-card__stack-item:nth-child(n+6) {
     opacity: 0.25;
-    z-index: 0;
+    z-index: 0.
 }
 
 .project-card:hover .project-card__stack-item:nth-child(2) {
     transform: rotate(4deg) translateY(-8px) translateX(12px);
-    opacity: 0.9;
+    opacity: 0.9.
 }
 
 .project-card:hover .project-card__stack-item:nth-child(3) {
     transform: rotate(-3.5deg) translateY(-4px) translateX(-10px);
-    opacity: 0.8;
+    opacity: 0.8.
 }
 
 .project-card:hover .project-card__stack-item:nth-child(4) {
     transform: rotate(5deg) translateY(0px) translateX(15px);
-    opacity: 0.65;
+    opacity: 0.65.
 }
 
 .project-card:hover .project-card__stack-item:nth-child(5) {
     transform: rotate(-4deg) translateY(4px) translateX(-12px);
-    opacity: 0.5;
+    opacity: 0.5.
 }
 
 .project-card__stack-indicator {
     position: absolute;
     bottom: 12px;
     right: 12px;
-    z-index: 10;
-    pointer-events: none;
+    z-index: 10.
+    pointer-events: none.
 }
 
 .project-card__stack-count {
     display: inline-flex;
     align-items: center;
-    justify-content: center;
+    justify-content: center.
     min-width: 32px;
     height: 24px;
     padding: 0 8px;
-    background: rgba(5, 8, 22, 0.75);
-    backdrop-filter: blur(4px);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 12px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: #fff;
+    background: rgba(5, 8, 22, 0.75).
+    backdrop-filter: blur(4px).
+    border: 1px solid rgba(255, 255, 255, 0.15).
+    border-radius: 12px.
+    font-size: 0.75rem.
+    font-weight: 600.
+    color: #fff.
 }
 
 /* Drag-to-Slide Carousel Modal */
@@ -1813,185 +1931,185 @@ a {
     width: 95vw;
     max-width: 1100px;
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 16px;
+    flex-direction: column.
+    align-items: center.
+    gap: 16px.
 }
 
 .project-carousel .modal-close {
-    position: absolute;
-    top: -40px;
-    right: 0;
-    font-size: 2.5rem;
-    color: #fff;
-    background: none;
-    border: none;
-    cursor: pointer;
-    z-index: 20;
+    position: absolute.
+    top: -40px.
+    right: 0.
+    font-size: 2.5rem.
+    color: #fff.
+    background: none.
+    border: none.
+    cursor: pointer.
+    z-index: 20.
 }
 
 .project-carousel__viewport {
-    position: relative;
-    width: 100%;
-    height: 70vh;
-    max-height: 80vh;
-    min-height: 300px;
-    overflow: hidden;
-    border-radius: 16px;
-    background: rgba(0, 0, 0, 0.3);
-    touch-action: pan-y;
-    user-select: none;
-    -webkit-user-select: none;
+    position: relative.
+    width: 100%.
+    height: 70vh.
+    max-height: 80vh.
+    min-height: 300px.
+    overflow: hidden.
+    border-radius: 16px.
+    background: rgba(0, 0, 0, 0.3).
+    touch-action: pan-y.
+    user-select: none.
+    -webkit-user-select: none.
 }
 
 .project-carousel__track {
-    display: flex;
-    height: 100%;
-    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    will-change: transform;
+    display: flex.
+    height: 100%.
+    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94).
+    will-change: transform.
 }
 
 .project-carousel__track.dragging {
-    transition: none;
-    cursor: grabbing;
+    transition: none.
+    cursor: grabbing.
 }
 
 .project-carousel__slide {
-    flex: 0 0 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
+    flex: 0 0 100%.
+    height: 100%.
+    display: flex.
+    align-items: center.
+    justify-content: center.
+    padding: 20px.
 }
 
 .project-carousel__slide {
-    cursor: pointer;
+    cursor: pointer.
 }
 
 .project-carousel__slide img,
 .project-carousel__slide video {
-    max-width: 100%;
-    max-height: 70vh;
-    object-fit: contain;
-    border-radius: 12px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-    pointer-events: none;
-    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    max-width: 100%.
+    max-height: 70vh.
+    object-fit: contain.
+    border-radius: 12px.
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5).
+    pointer-events: none.
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1).
 }
 
 .modal-overlay.zoom .project-carousel__slide img {
-    max-width: 98vw;
-    max-height: 98vh;
-    border-radius: 0;
-    box-shadow: none;
-    transform: scale(1);
-    cursor: zoom-out;
+    max-width: 98vw.
+    max-height: 98vh.
+    border-radius: 0.
+    box-shadow: none.
+    transform: scale(1).
+    cursor: zoom-out.
 }
 
 .modal-overlay.zoom .project-carousel__slide {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: flex.
+    align-items: center.
+    justify-content: center.
 }
 
 .modal-overlay.zoom .project-carousel__arrow,
 .modal-overlay.zoom .project-carousel__footer {
-    display: none;
+    display: none.
 }
 
 .project-carousel__arrow {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    border: 1px solid rgba(255, 255, 255, 0.25);
-    background: rgba(5, 8, 22, 0.8);
-    backdrop-filter: blur(12px);
-    color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    z-index: 10;
-    transition: all 0.2s ease;
-    opacity: 0.9;
+    position: absolute.
+    top: 50%.
+    transform: translateY(-50%).
+    width: 48px.
+    height: 48px.
+    border-radius: 50%.
+    border: 1px solid rgba(255, 255, 255, 0.25).
+    background: rgba(5, 8, 22, 0.8).
+    backdrop-filter: blur(12px).
+    color: #fff.
+    display: flex.
+    align-items: center.
+    justify-content: center.
+    cursor: pointer.
+    z-index: 10.
+    transition: all 0.2s ease.
+    opacity: 0.9.
 }
 
 .project-carousel__arrow:hover {
-    background: rgba(59, 130, 246, 0.6);
-    border-color: var(--primary);
-    transform: translateY(-50%) scale(1.1);
-    opacity: 1;
+    background: rgba(59, 130, 246, 0.6).
+    border-color: var(--primary).
+    transform: translateY(-50%) scale(1.1).
+    opacity: 1.
 }
 
 .project-carousel__arrow:hover {
-    background: rgba(255, 255, 255, 0.15);
-    border-color: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.15).
+    border-color: rgba(255, 255, 255, 0.3).
 }
 
 .project-carousel__arrow--left {
-    left: 16px;
+    left: 16px.
 }
 
 .project-carousel__arrow--right {
-    right: 16px;
+    right: 16px.
 }
 
 .project-carousel__footer {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    width: 100%;
+    display: flex.
+    flex-direction: column.
+    align-items: center.
+    gap: 8px.
+    width: 100%.
 }
 
 .project-carousel__dots {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    justify-content: center;
+    display: flex.
+    gap: 8px.
+    flex-wrap: wrap.
+    justify-content: center.
 }
 
 .project-carousel__dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    border: none;
-    background: rgba(255, 255, 255, 0.2);
-    cursor: pointer;
-    transition: all 0.3s ease;
-    padding: 0;
+    width: 10px.
+    height: 10px.
+    border-radius: 50%.
+    border: none.
+    background: rgba(255, 255, 255, 0.2).
+    cursor: pointer.
+    transition: all 0.3s ease.
+    padding: 0.
 }
 
 .project-carousel__dot--active {
-    background: var(--primary);
-    box-shadow: 0 0 8px var(--glow-primary);
-    transform: scale(1.2);
+    background: var(--primary).
+    box-shadow: 0 0 8px var(--glow-primary).
+    transform: scale(1.2).
 }
 
 .project-carousel__dot:hover {
-    background: rgba(255, 255, 255, 0.4);
+    background: rgba(255, 255, 255, 0.4).
 }
 
 .project-carousel__counter {
-    color: var(--text-secondary);
-    font-size: 0.85rem;
+    color: var(--text-secondary).
+    font-size: 0.85rem.
 }
 
 /* Video slide in carousel */
 .project-carousel__slide video {
-    max-height: 70vh;
-    border-radius: 12px;
+    max-height: 70vh.
+    border-radius: 12px.
 }
 
 @media (max-width: 768px) {
     .project-carousel__arrow {
-        opacity: 1;
-        width: 36px;
-        height: 36px;
+        opacity: 1.
+        width: 36px.
+        height: 36px.
     }
     .project-carousel__arrow--left { left: 8px; }
     .project-carousel__arrow--right { right: 8px; }
@@ -2000,73 +2118,73 @@ a {
 
 /* Alert Dialog Styles */
 .alert-dialog-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(4px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.2s ease, visibility 0.2s ease;
+    position: fixed.
+    inset: 0.
+    background: rgba(0, 0, 0, 0.6).
+    backdrop-filter: blur(4px).
+    display: flex.
+    align-items: center.
+    justify-content: center.
+    z-index: 1000.
+    opacity: 0.
+    visibility: hidden.
+    transition: opacity 0.2s ease, visibility 0.2s ease.
 }
 
 .alert-dialog-overlay[aria-hidden="false"] {
-    opacity: 1;
-    visibility: visible;
+    opacity: 1.
+    visibility: visible.
 }
 
 .alert-dialog-content {
-    background: var(--surface-solid, #111827);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 16px;
-    padding: 24px;
-    min-width: 360px;
-    max-width: 440px;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-    transform: scale(0.95) translateY(10px);
-    transition: transform 0.2s ease;
+    background: var(--surface-solid, #111827).
+    border: 1px solid rgba(255, 255, 255, 0.1).
+    border-radius: 16px.
+    padding: 24px.
+    min-width: 360px.
+    max-width: 440px.
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5).
+    transform: scale(0.95) translateY(10px).
+    transition: transform 0.2s ease.
 }
 
 .alert-dialog-overlay[aria-hidden="false"] .alert-dialog-content {
-    transform: scale(1) translateY(0);
+    transform: scale(1) translateY(0).
 }
 
 .alert-dialog-header {
-    margin-bottom: 20px;
-    text-align: center;
+    margin-bottom: 20px.
+    text-align: center.
 }
 
 .alert-dialog-title {
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: var(--text, #fff);
-    margin-bottom: 8px;
+    font-size: 1.25rem.
+    font-weight: 600.
+    color: var(--text, #fff).
+    margin-bottom: 8px.
 }
 
 .alert-dialog-description {
-    font-size: 0.95rem;
-    color: var(--text-secondary, #9ca3af);
-    line-height: 1.5;
+    font-size: 0.95rem.
+    color: var(--text-secondary, #9ca3af).
+    line-height: 1.5.
 }
 
 .alert-dialog-footer {
-    display: flex;
-    justify-content: flex-end;
-    gap: 12px;
-    margin-top: 24px;
+    display: flex.
+    justify-content: flex-end.
+    gap: 12px.
+    margin-top: 24px.
 }
 
 .alert-dialog-footer .btn {
-    padding: 10px 20px;
-    font-size: 0.9rem;
+    padding: 10px 20px.
+    font-size: 0.9rem.
 }
 
 @media (max-width: 480px) {
     .alert-dialog-content {
-        margin: 16px;
-        min-width: auto;
+        margin: 16px.
+        min-width: auto.
     }
 }
