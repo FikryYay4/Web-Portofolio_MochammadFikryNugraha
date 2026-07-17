@@ -12,14 +12,22 @@
     {% include 'layouts/navbar.html' %}
 
     <main>
-            {% block content %}{% endblock %}
-        </main>
+        {% block content %}{% endblock %}
+    </main>
 
     {% include 'layouts/footer.html' %}
 
     {% include 'components/modal.html' %}
     {% include 'components/cert_modal.html' %}
     {% include 'components/project_modal.html' %}
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+            <div data-flash-{{ category }}="{{ message }}"></div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
     {% include 'components/alert_dialog.html' %}
 
     {% include 'layouts/scripts.html' %}
