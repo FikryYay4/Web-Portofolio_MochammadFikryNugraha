@@ -76,6 +76,25 @@ def create_app():
     def inject_csrf():
         return {'csrf_token': generate_csrf_token}
 
+    @app.template_global()
+    def upload_url(value, subfolder=''):
+        """Resolve an uploaded-file value to a displayable URL.
+        - Supabase Storage now returns a full https:// URL at upload time,
+          which is stored directly in the DB column - pass it through as-is.
+        - Anything else is treated as a legacy bare filename from before the
+          Supabase migration and is routed through /static/uploads/<path> as
+          a best-effort fallback (the underlying file may no longer exist on
+          Vercel's ephemeral disk, in which case it 404s like any missing
+          image - there's no way to recover bytes that are already gone).
+        """
+        from flask import url_for
+        if not value:
+            return ''
+        if value.startswith('http://') or value.startswith('https://'):
+            return value
+        path = f"uploads/{subfolder}/{value}" if subfolder else f"uploads/{value}"
+        return url_for('static', filename=path.replace('//', '/'))
+
     from routes.public import public_bp
     from routes.admin import admin_bp
     app.register_blueprint(public_bp)

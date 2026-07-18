@@ -4,27 +4,17 @@ from models.hidden_certificate import HiddenCertificate
 from models.hidden_project import HiddenProject
 from utils.validators import validate_contact
 from utils.csrf import csrf_required
+from services.upload_service import list_certificate_files
 
 public_bp = Blueprint('public', __name__)
 @public_bp.route('/')
 def home():
-    import os
     profile = Profile.query.first()
     skills = Skill.query.order_by(Skill.order, Skill.id).all()
     hidden_project_ids = {h.project_id for h in HiddenProject.query.all()}
     projects = Project.query.filter(Project.id.notin_(hidden_project_ids)).order_by(Project.order, Project.id.desc()).all()
     hidden_cert_filenames = {h.filename for h in HiddenCertificate.query.all()}
-    seen = set()
-    cert_files = []
-    for base in [os.path.join(current_app.config['STATIC_DIR'], 'uploads', 'certificates'),
-                 os.path.join(current_app.config['UPLOAD_FOLDER'], 'certificates')]:
-        if os.path.isdir(base):
-            for f in sorted(os.listdir(base)):
-                fp = os.path.join(base, f)
-                if os.path.isfile(fp) and f not in seen:
-                    seen.add(f)
-                    if f not in hidden_cert_filenames:
-                        cert_files.append(f)
+    cert_files = [c for c in list_certificate_files() if c['filename'] not in hidden_cert_filenames]
     project_count = Project.query.filter(Project.id.notin_(hidden_project_ids)).count()
     skill_count = Skill.query.count()
     return render_template('pages/home.html', profile=profile, skills=skills,

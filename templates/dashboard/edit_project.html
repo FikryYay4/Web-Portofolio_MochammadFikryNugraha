@@ -5,10 +5,6 @@
 <div class="dashboard">
     <div class="dashboard__header">
         <h1 class="dashboard__title">Edit Project</h1>
-        <div class="dashboard__header-actions">
-        <a href="{{ url_for('admin.dashboard') }}" class="btn btn--ghost">&larr; Dashboard</a>
-        <a href="{{ url_for('admin.projects_list') }}" class="btn btn--ghost">Back</a>
-        </div>
     </div>
 
     <form class="dashboard__form glass-card" action="{{ url_for('admin.project_edit', project_id=project.id) }}" method="POST" enctype="multipart/form-data">
@@ -72,7 +68,7 @@
             <div id="imageGallery" class="image-gallery" style="display:flex;flex-wrap:wrap;gap:12px;margin-top:12px;">
                 {% for img in pimages %}
                 <div class="image-gallery__item" data-id="{{ img.id }}" draggable="true" style="position:relative;width:120px;height:80px;border-radius:8px;overflow:hidden;border:1px solid rgba(255,255,255,0.1);cursor:grab;">
-                    <img src="{{ url_for('static', filename='uploads/project_images/' + img.filename) }}" alt="" style="width:100%;height:100%;object-fit:cover;">
+                    <img src="{{ upload_url(img.filename, 'project_images') }}" alt="" style="width:100%;height:100%;object-fit:cover;">
                     <button type="button" data-img-id="{{ img.id }}" class="img-delete-btn" style="position:absolute;top:2px;right:2px;width:22px;height:22px;border-radius:50%;border:none;background:rgba(239,68,68,0.9);color:#fff;font-size:14px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;">&times;</button>
                     <div class="image-gallery__order" style="position:absolute;bottom:2px;left:2px;background:rgba(0,0,0,0.7);color:#fff;font-size:11px;padding:1px 6px;border-radius:4px;">{{ img.order }}</div>
                 </div>

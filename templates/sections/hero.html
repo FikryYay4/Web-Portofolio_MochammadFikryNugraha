@@ -21,7 +21,7 @@
                 <div class="hero__avatar-glow"></div>
                 <canvas id="heroCanvas" class="hero__canvas hero__canvas--front"></canvas>
                 {% if profile and profile.photo %}
-                    <img src="{{ url_for('static', filename='uploads/' + profile.photo) }}" alt="{{ profile.name }}" class="hero__avatar" onerror="this.onerror=null;this.src='{{ url_for('static', filename='uploads/profile.png') }}'">
+                    <img src="{{ upload_url(profile.photo) }}" alt="{{ profile.name }}" class="hero__avatar" onerror="this.onerror=null;this.src='{{ upload_url('profile.png') }}'">
                 {% else %}
                     <div class="hero__avatar-placeholder">
                         <span>{{ (profile.name if profile else 'YN') | truncate(2, True, '') }}</span>

@@ -11,9 +11,9 @@
                 <div class="about__image-wrapper">
                     <div class="about__image-glow"></div>
                     {% if profile and profile.photo %}
-                        <img src="{{ url_for('static', filename='uploads/' + profile.photo) }}" alt="{{ profile.name }}" class="about__image" onerror="this.onerror=null;this.src='{{ url_for('static', filename='uploads/profile.png') }}'">
+                        <img src="{{ upload_url(profile.photo) }}" alt="{{ profile.name }}" class="about__image" onerror="this.onerror=null;this.src='{{ upload_url('profile.png') }}'">
                     {% else %}
-                        <img src="{{ url_for('static', filename='uploads/profile.png') }}" alt="Mochammad Fikry Nugraha" class="about__image">
+                        <img src="{{ upload_url('profile.png') }}" alt="Mochammad Fikry Nugraha" class="about__image">
                     {% endif %}
                 </div>
             </div>

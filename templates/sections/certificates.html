@@ -20,10 +20,10 @@
                 'IMG_20250604_0001_page-0001.jpg': 'Certificate Page 1',
                 'IMG_20250604_0001_page-0002.jpg': 'Certificate Page 2'
             } %}
-            {% for f in cert_files %}
-            {% set caption = labels.get(f, f.rsplit('.', 1)[0].replace('_', ' ').replace('-', ' ')) %}
+            {% for cert in cert_files %}
+            {% set caption = labels.get(cert.filename, cert.filename.rsplit('.', 1)[0].replace('_', ' ').replace('-', ' ')) %}
             <div class="cert-item cert-zoom">
-                <img src="{{ url_for('static', filename='uploads/certificates/' + f) }}" alt="{{ caption }}" onclick="openCertModal(this)">
+                <img src="{{ cert.url or upload_url(cert.filename, 'certificates') }}" alt="{{ caption }}" onclick="openCertModal(this)">
                 <p class="cert-caption">{{ caption }}</p>
             </div>
             {% endfor %}

@@ -3,11 +3,8 @@
 {% block content %}
 <div class="dashboard">
     <div class="dashboard__header">
-        <h1 class="dashboard__title">Edit Profile</h1>
-        <div class="dashboard__header-actions">
-        <a href="{{ url_for('admin.dashboard') }}" class="btn btn--ghost">&larr; Back to Dashboard</a>
+            <h1 class="dashboard__title">Edit Profile</h1>
         </div>
-    </div>
 
 
     <form class="dashboard__form glass-card" action="{{ url_for('admin.profile') }}" method="POST" enctype="multipart/form-data">
